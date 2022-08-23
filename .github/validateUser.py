@@ -21,9 +21,8 @@ if CHANGED_FILES == "":
     print("No changes detected.")
     sys.exit(0)
 
-        
 #Der erste oberste Pfad wird als einzige gueltige Firma anerkannt
-#Existiert diese nicht, oder aendert sie sich innerhalb eines Pull Requests, ist der Test ungueltig
+#Existiert diese nicht, oder aeandert sie sich innerhalb eines Pull Requests, ist der Test ungueltig
 currentCompany = CHANGED_FILES.split()[0].split('/')[0]
 
 #Checken, ob in nur einem Pfad Aenderungen vorgenommen wurden
@@ -31,7 +30,7 @@ for file in CHANGED_FILES.split():
     if currentCompany == file.split('/')[0]:
         pass
     else:
-        print("You are only allowed to make changes in one directory!")
+        print('::error::You are not allowed to make changes in multiple directories!')
         sys.exit(1)
 
 #Checken ob CURRENT_USER für currentCompany zugelassen ist
@@ -44,9 +43,9 @@ try:
                     sys.exit(0)
                     
 except (KeyError):
-    print("You are not allowed, to make changes in this directory!")
+    print('::error::You are not allowed, to make changes in this directory!')
     sys.exit(1) 
 
 
-print("You are not allowed, to make changes in this directory!")
+print('::error::You are not allowed, to make changes in this directory!')
 sys.exit(1) 

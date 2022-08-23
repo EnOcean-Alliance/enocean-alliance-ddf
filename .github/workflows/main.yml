@@ -16,6 +16,9 @@ jobs:
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
 
+    env:
+      CHANGED_FILES: initValue_CHANGED_FILES
+
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
@@ -24,11 +27,18 @@ jobs:
         with:
           python-version: '3.x'
           cache: 'pip'
-      - run: pip install -r requirements.txt    
+      - run: pip install -r .github/requirements.txt    
+
+      - name: Get changed files
+        id: changed-files
+        uses: tj-actions/changed-files@v23.1
+
+      - name: Variables assignment
+        run: echo "CHANGED_FILES=${{ steps.changed-files.outputs.all_changed_files }}" >> $GITHUB_ENV  
 
       # Runs a single command using the runners shell
       - name: Run XML validation
-        run: python validateXML.py
+        run: python .github/validateXML.py
   
 
   validate-user:
@@ -48,7 +58,7 @@ jobs:
         with:
           python-version: '3.x'
           cache: 'pip'
-      - run: pip install -r requirements.txt    
+      - run: pip install -r .github/requirements.txt    
 
       - name: Get changed files
         id: changed-files
@@ -62,4 +72,4 @@ jobs:
 
       - name: Run user validation
         run: |
-          python validateUser.py
+          python .github/validateUser.py

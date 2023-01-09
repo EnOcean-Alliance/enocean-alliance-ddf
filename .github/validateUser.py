@@ -8,17 +8,13 @@ ALLOWED_USERS = os.environ.get("ALLOWED_USERS")
 
 allowedUsersReadable = json.loads(ALLOWED_USERS)
 
-#Checken ob CURRENT_USER Administrator ist. Falls ja, alle Aenderungen erlauben
-for user in allowedUsersReadable["administrators"]:
-    if user == CURRENT_USER:
-        print("Welcome Administrator!")
-        sys.exit(0)
-
         
 #Wenn keine Aenderungen erkannt werden, bzw. eine Aenderung 1:1 rueckgaengig gemacht wurde, 
-#ist der Test gueltig
-if CHANGED_FILES == "":
-    print("No changes detected.")
+#ist der Test gueltig;
+#Wenn eine Datei geloescht wurde, und sich NUR die 'index.xml' aendert,
+#ist der Test guelitg
+if CHANGED_FILES == "" or (len(CHANGED_FILES.split()) == 1 and CHANGED_FILES.split()[0].split('/')[0] == 'index.xml'):
+    print("No changes detected. (index.xml will be ignored)")
     sys.exit(0)
 
 #Der erste oberste Pfad wird als einzige gueltige Firma anerkannt
@@ -27,7 +23,11 @@ currentCompany = CHANGED_FILES.split()[0].split('/')[0]
 
 #Checken, ob in nur einem Pfad Aenderungen vorgenommen wurden
 for file in CHANGED_FILES.split():
-    if currentCompany == file.split('/')[0]:
+    if file.split('/')[0] == 'index.xml':
+        print("index.xml will be ignored")
+        pass
+    elif currentCompany == file.split('/')[0]:
+        print("Paths: " + file.split('/')[0])
         pass
     else:
         print('::error::You are not allowed to make changes in multiple directories!')

@@ -11,67 +11,24 @@
 		<Frequency>868</Frequency>
 		<TX>
 			<!-- The Profiles we send based on our chip id -->
-			<ChipIDBased>
+			<BaseID>
 				<EEP>
 					<Rorg>0xA5</Rorg>
 					<Func>0x20</Func>
 					<Type>0x01</Type>
 				</EEP>
-			</ChipIDBased>
+			</BaseID>
 		</TX>
 		<RX>
 			<!-- The Profiles we send based on our chip id -->
-			<ChipIDBased>
 				<EEP>
 					<Rorg>0xA5</Rorg>
 					<Func>0x20</Func>
 					<Type>0x01</Type>
 				</EEP>
-			</ChipIDBased>
 		</RX>
 		<LinkTable_MetaData>
 			<OutboundTable maxLength="1" GPSupported="false" RemoteTeachSupported="false" SecuritySupported="false"/>
 		</LinkTable_MetaData>
-
-		<!-- ReMan and ReComm commands -->
-		<ReMan>
-			<Cmd CmdId="0x0001">
-				<Description>Unlock - RM_FN_UNLOCK</Description>
-			</Cmd>
-			<Cmd CmdId="0x0002">
-				<Description>Lock - RM_FN_LOCK</Description>
-			</Cmd>
-			<Cmd CmdId="0x0003">
-				<Description>Set security - RM_FN_SET_CODE</Description>
-			</Cmd>
-			<Cmd CmdId="0x0004">
-				<Description>Query ID - RM_FN_QUERY_ID</Description>
-			</Cmd>
-			<Cmd CmdId="0x0006">
-				<Description>Ping - RM_FN_PING_COMMAND</Description>
-			</Cmd>
-			<Cmd CmdId="0x0007">
-				<Description>Query supported RPC functions -
-					RM_FN_QUERY_FUNCTION_COMMAND
-				</Description>
-			</Cmd>
-			<Cmd CmdId="0x0008">
-				<Description>Query last Status - RM_FN_QUERY_STATUS</Description>
-			</Cmd>
-		</ReMan>
-		<ReComm>
-			<Cmd CmdId="0x0210">
-				<Description>Get Link Table Metadata Query</Description>
-			</Cmd>
-			<Cmd CmdId="0x0211">
-				<Description>Get Link Table Query</Description>
-			</Cmd>
-			<Cmd CmdId="0x0212">
-				<Description>Set Link Table Content</Description>
-			</Cmd>
-			<Cmd CmdId="0x0227">
-				<Description>Get Product Id Query</Description>
-			</Cmd>
-		</ReComm>
 	</Device>
 </Enocean_Devices>

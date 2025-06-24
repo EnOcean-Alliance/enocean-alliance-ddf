@@ -6,14 +6,21 @@ from lxml import etree
 CHANGED_FILES = os.environ.get("CHANGED_FILES")
 
 def validate(xml_path: str, xsd_path: str) -> bool:
+    try:
+        xmlschema_doc = etree.parse(xsd_path)
+        xmlschema = etree.XMLSchema(xmlschema_doc)
 
-    xmlschema_doc = etree.parse(xsd_path)
-    xmlschema = etree.XMLSchema(xmlschema_doc)
+        xml_doc = etree.parse(xml_path)
+        result = xmlschema.validate(xml_doc)
 
-    xml_doc = etree.parse(xml_path)
-    result = xmlschema.validate(xml_doc)
-
-    return result
+        if not result:
+            # Print all validation errors
+            for error in xmlschema.error_log:
+                print(f"Validation error at line {error.line}: {error.message}")
+        return result
+    except Exception as e:
+        print(f"Exception during validation: {e}")
+        return False
 
 
 #Wenn keine Aenderungen erkannt werden, bzw. eine Aenderung 1:1 rueckgaengig gemacht wurde, 

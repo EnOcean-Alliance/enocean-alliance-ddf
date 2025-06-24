@@ -6,6 +6,8 @@
 	<Device Product_ID="0x003400000000">
 		<Name>stellaproeno</Name>
 		<Description>Intelligent Thermostatic Radiator Valve</Description>
+		<Firmware_Version>2.1.7.1</Firmware_Version>
+		<Hardware_Version>1.0.0.0</Hardware_Version>
 		<Frequency>868</Frequency>
 		<TX>
 			<!-- The Profiles we send based on our chip id -->

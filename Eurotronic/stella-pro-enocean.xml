@@ -11,13 +11,13 @@
 		<Frequency>868</Frequency>
 		<TX>
 			<!-- The Profiles we send based on our chip id -->
-			<BaseID>
+			<EURID>
 				<EEP>
 					<Rorg>0xA5</Rorg>
 					<Func>0x20</Func>
 					<Type>0x01</Type>
 				</EEP>
-			</BaseID>
+			</EURID>
 		</TX>
 		<RX>
 			<!-- The Profiles we send based on our chip id -->

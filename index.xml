@@ -4,6 +4,7 @@
 	<Product Path="company-01/ddf-example-ptm.xml" Product_ID="0xFFFFFFFFFFFF"/>
 	<Product Path="company-02/ddf-exmaple-2.xml" Product_ID="0xFFFFFFFFFFFF"/>
 	<Product Path="company-02/ddf-example-controller.xml" Product_ID="0xFFFFFFFFFFFF"/>
+	<Product Path="Afriso/ddf-cositherm-6-channel.xml" Product_ID="0x002D00000005"/>
 	<Product Path="company-03/product-01.xml" Product_ID="0xFFFFFFFFFFFF"/>
 	<Product Path="company-03/ddf-example-ptm.xml" Product_ID="0xFFFFFFFFFFFF"/>
 	<Product Path="company-03/product-02.xml" Product_ID="0xFFFFFFFFFFFF"/>

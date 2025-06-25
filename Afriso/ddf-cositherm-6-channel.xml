@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Enocean_Devices xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="./ReCom_Device_Description_SchemaV1_3.xsd" schemaVersion="1.3">
+  <Device Product_ID="0x002D00000005">
+    <Name>Afriso Cositherm 6-Channel</Name>
+    <Description>This device controls the channels</Description>
+    <Firmware_Version>1.6</Firmware_Version>
+    <Hardware_Version>1</Hardware_Version>
+    <Frequency>868</Frequency>
+    <ReComVersion>1.10</ReComVersion>
+    <RemanVersion>2.9</RemanVersion>
+    <TX>
+      <EURID>
+        <EEP LinkEntry="None">
+          <Rorg>0xB0</Rorg> <!-- GP Telegram			-->
+          <Func>0x00</Func> <!-- Func 0x00	-->
+          <Type>0x00</Type> <!-- Type 0x00	-->
+        </EEP>
+      </EURID>
+    </TX>
+    <RX>
+      <EEP LinkEntry="Inbound">
+        <Rorg>0xA5</Rorg> <!-- 4BS Telegram			-->
+        <Func>0x10</Func> <!-- Room Controler	 -->
+        <Type>0x03</Type>
+      </EEP>
+      <EEP LinkEntry="Inbound">
+        <Rorg>0xA5</Rorg> <!-- 4BS Telegram     -->
+        <Func>0x10</Func> <!-- Room Controler  -->
+        <Type>0x04</Type>
+      </EEP>
+      <EEP LinkEntry="Inbound">
+        <Rorg>0xA5</Rorg> <!-- 4BS Telegram     -->
+        <Func>0x10</Func> <!-- Room Controler  -->
+        <Type>0x12</Type>
+      </EEP>
+      <EEP LinkEntry="Inbound">
+        <Rorg>0xA5</Rorg> <!-- 4BS Telegram     -->
+        <Func>0x10</Func> <!-- Room Controler  -->
+        <Type>0x01</Type>
+      </EEP>
+      <EEP LinkEntry="Inbound">
+        <Rorg>0xA5</Rorg> <!-- 4BS Telegram     -->
+        <Func>0x10</Func> <!-- Room Controler  -->
+        <Type>0x05</Type>
+      </EEP>
+      <EEP LinkEntry="Inbound">
+        <Rorg>0xA5</Rorg> <!-- 4BS Telegram     -->
+        <Func>0x10</Func> <!-- Room Controler  -->
+        <Type>0x22</Type>
+      </EEP>
+      <EEP LinkEntry="Inbound">
+        <Rorg>0xA5</Rorg> <!-- 4BS Telegram     -->
+        <Func>0x10</Func> <!-- Room Controler  -->
+        <Type>0x23</Type>
+      </EEP>
+      <EEP LinkEntry="Inbound">
+        <Rorg>0xA5</Rorg> <!-- 4BS Telegram     -->
+        <Func>0x10</Func> <!-- Room Controler  -->
+        <Type>0x10</Type>
+      </EEP>
+      <EEP LinkEntry="Inbound">
+        <Rorg>0xA5</Rorg> <!-- 4BS Telegram     -->
+        <Func>0x10</Func> <!-- Room Controler  -->
+        <Type>0x06</Type>
+      </EEP>
+      <EEP LinkEntry="Inbound">
+        <Rorg>0xA5</Rorg> <!-- 4BS Telegram     -->
+        <Func>0x10</Func> <!-- Room Controler  -->
+        <Type>0x11</Type>
+      </EEP>
+      <EEP LinkEntry="Inbound">
+        <Rorg>0xA5</Rorg> <!-- 4BS Telegram     -->
+        <Func>0x10</Func> <!-- Room Controler  -->
+        <Type>0x02</Type>
+      </EEP> 
+    </RX>
+    <LinkTable_MetaData>
+      <InboundTable maxLength="6" GPSupported="true" RemoteTeachSupported="false" SecuritySupported="false"/>
+      <OutboundTable maxLength="0" GPSupported="false" RemoteTeachSupported="false" SecuritySupported="false"/>
+    </LinkTable_MetaData>
+  </Device>
+</Enocean_Devices>

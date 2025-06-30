@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<Enocean_Devices xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="./ReCom_Device_Description_SchemaV1_3.xsd" schemaVersion="1.3">
+<Enocean_Devices xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../ReCom_Device_Description_Schema.xsd" schemaVersion="1.3">
   <Device Product_ID="0x002D00000005">
     <Name>Afriso Cositherm 6-Channel</Name>
     <Description>This device controls the channels</Description>

@@ -1,0 +1,1126 @@
+<?xml version="1.0"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" version="1.1">
+<xs:annotation>
+  <xs:appinfo>EnOcean Alliance Device Description File</xs:appinfo>
+  <xs:documentation xml:lang="en">
+  This Schema defines a EnOcean Device using a 6Byte Product ID as reference.
+  </xs:documentation>
+</xs:annotation>
+<xs:element name="Enocean_Devices" type="DeviceType"/>
+  
+<xs:complexType name="DeviceType">
+<xs:sequence>
+<xs:element name="Device">
+  <xs:annotation>
+    <xs:appinfo>EnOcean Alliance Device</xs:appinfo>
+    <xs:documentation xml:lang="en">
+      This is the root node for a device, it needs to contain the product ID for looking up the reference
+    </xs:documentation>
+  </xs:annotation>
+ <xs:complexType>
+  <xs:sequence>
+    <xs:element name="Name" type="xs:string">
+      <xs:annotation>
+        <xs:appinfo>Name of the ProductType</xs:appinfo>
+        <xs:documentation xml:lang="en">
+          This is the product name to display in a tool. e.g. STM330, 
+        </xs:documentation>
+      </xs:annotation>
+    </xs:element>
+    <xs:element name="Description" type="xs:string">
+      <xs:annotation>
+        <xs:appinfo>Description of the ProductType</xs:appinfo>
+        <xs:documentation xml:lang="en">
+          This is the description of the product to display in a tool. e.g. "A energy harvesting temperature sensor",
+        </xs:documentation>
+      </xs:annotation>
+    </xs:element>
+    <xs:element name="Firmware_Version" type="xs:string">
+      <xs:annotation>
+        <xs:appinfo>Firmware Version associated with this ProductID</xs:appinfo>
+        <xs:documentation xml:lang="en">
+          This is the firmware version, which is associated with the ProductID
+        </xs:documentation>
+      </xs:annotation>
+    </xs:element>
+    <xs:element name="Hardware_Version" type="xs:string">
+      <xs:annotation>
+        <xs:appinfo>Hardware Version associated with this ProductID</xs:appinfo>
+        <xs:documentation xml:lang="en">
+          This is the Hardware version, which is associated with the ProductID
+        </xs:documentation>
+      </xs:annotation>
+    </xs:element>
+    <xs:element name="Frequency" type="FreqType">
+      <xs:annotation>
+        <xs:appinfo>Frequency associated with this ProductID</xs:appinfo>
+        <xs:documentation xml:lang="en">
+          This is the Frequency, which is associated with the ProductID. Can only be one. 
+        </xs:documentation>
+      </xs:annotation>
+    </xs:element>
+    <xs:element name="ReComVersion" maxOccurs="1" minOccurs="0" type="xs:string">
+      <xs:annotation>
+        <xs:appinfo>ReCom Version supported by this device</xs:appinfo>
+        <xs:documentation xml:lang="en">
+          This is the ReCom Version supported by this Product. If this tag does not exist, ReCom is not supported. 
+          If ReCom is supported, ReMan also needs to be supported.
+          
+        </xs:documentation>
+      </xs:annotation>
+    </xs:element>
+    <xs:element name="RemanVersion" maxOccurs="1" minOccurs="0" type="xs:string">
+      <xs:annotation>
+        <xs:appinfo>ReMan Version supported by this device</xs:appinfo>
+        <xs:documentation xml:lang="en">
+          This is the ReMan Version supported by this Product. If this tag does not exist, ReMan is not supported.
+        </xs:documentation>
+      </xs:annotation>
+    </xs:element>
+   <xs:element name="TX" maxOccurs="1" minOccurs="0">
+     <xs:annotation>
+       <xs:appinfo>All profiles transmitted by this Product</xs:appinfo>
+       <xs:documentation xml:lang="en">
+         This optional node, lists all the profiles (eep/gp and signal) that this device can send. Each profile can either be send via EURID or using of 1 of the 128 BASEID.
+         Each gp or eep, which is send via a EURID needs an LinkEntry attribute. If it's none, the profile will be transmitted using a BroadCast id. Otherwise an addressed telegram will be used, which 
+         is contained in the associated LinkTable
+       </xs:documentation>
+     </xs:annotation>
+    <xs:complexType>
+     <xs:sequence>
+      <xs:element name="EURID" maxOccurs="1" minOccurs="0">
+        <xs:annotation>
+          <xs:appinfo>Profiles transmitted using the eurid</xs:appinfo>
+          <xs:documentation xml:lang="en">
+            This optional node contains all profiles using the eurid
+          </xs:documentation>
+        </xs:annotation>
+       <xs:complexType>
+        <xs:sequence>
+          <xs:element name="EEP" type="EEPType" maxOccurs="unbounded" minOccurs="0">
+            <xs:annotation>
+              <xs:appinfo>Supporter EEPs</xs:appinfo>
+              <xs:documentation xml:lang="en">
+                A supported eep with rorg,func and type
+              </xs:documentation>
+            </xs:annotation>
+          </xs:element>
+         <xs:element name="GP" type="GPType" maxOccurs="unbounded" minOccurs="0">
+           <xs:annotation>
+             <xs:appinfo>Supported GP</xs:appinfo>
+             <xs:documentation xml:lang="en">
+               A supported GP either written down as  GP_TeachIN or GPCHannel definition
+             </xs:documentation>
+           </xs:annotation>
+         </xs:element>
+		     <xs:element name="Signals" type="SignalType"  maxOccurs="1" minOccurs="0">
+           <xs:annotation>
+             <xs:appinfo>Profiles transmitted using the eurid</xs:appinfo>
+             <xs:documentation xml:lang="en">
+               This optional node contains all profiles using the eurid
+             </xs:documentation>
+           </xs:annotation>
+         </xs:element>
+        </xs:sequence>
+       </xs:complexType>
+      </xs:element>
+       <xs:element name="BaseID" type="BaseIDType" maxOccurs="1" minOccurs="0">
+         <xs:annotation>
+           <xs:appinfo>All profiles transmitted by this Product using a base</xs:appinfo>
+           <xs:documentation xml:lang="en">
+             This optional node, lists all the profiles (eep/gp ) that this device can send using a BASEID.
+           </xs:documentation>
+         </xs:annotation>
+       </xs:element>
+     </xs:sequence>
+    </xs:complexType>
+   </xs:element>
+
+   <xs:element name="RX" maxOccurs="1" minOccurs="0">
+     <xs:annotation>
+       <xs:appinfo>All profiles which can be received by this Product</xs:appinfo>
+       <xs:documentation xml:lang="en">
+         This optional node, lists all the profiles (eep/gp and signal) that this device can receive. 
+         Each gp or eep, which is received, needs an LinkEntry attribute. 
+       </xs:documentation>
+     </xs:annotation>
+    <xs:complexType>
+     <xs:sequence>
+       <xs:element name="EEP" type="EEPType" maxOccurs="unbounded" minOccurs="0">
+         <xs:annotation>
+           <xs:appinfo>Supporter EEPs</xs:appinfo>
+           <xs:documentation xml:lang="en">
+             A supported eep with rorg,func and type
+           </xs:documentation>
+         </xs:annotation>
+       </xs:element>
+       <xs:element name="GP" type="GPType" maxOccurs="unbounded" minOccurs="0">
+         <xs:annotation>
+           <xs:appinfo>Supported GP</xs:appinfo>
+           <xs:documentation xml:lang="en">
+             A supported GP either written down as  GP_TeachIN or GPCHannel definition
+           </xs:documentation>
+         </xs:annotation>
+       </xs:element>
+     </xs:sequence>
+    </xs:complexType>
+   </xs:element>
+   <xs:element name="LinkTable_MetaData" maxOccurs="1" minOccurs="0">
+     <xs:annotation>
+       <xs:appinfo>Information about link tables</xs:appinfo>
+       <xs:documentation xml:lang="en">
+         This optional node, lists if an inbound and or outbound table is supported. And if it's supported how many entries it can have.
+       </xs:documentation>
+     </xs:annotation>
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="InboundTable" type="TableType" maxOccurs="1" minOccurs="0">
+          <xs:annotation>
+            <xs:appinfo>Information about inbound link table</xs:appinfo>
+            <xs:documentation xml:lang="en">
+              This nodes describes if a device supports an inbound link table, the maximal size and if gp, security and remoteteach are supported.
+            </xs:documentation>
+          </xs:annotation>
+        </xs:element>
+        <xs:element name="OutboundTable" type="TableType" maxOccurs="1" minOccurs="0">
+          <xs:annotation>
+            <xs:appinfo>Information about outbound link table</xs:appinfo>
+            <xs:documentation xml:lang="en">
+              This nodes describes if a device supports an inbound link table, the maximal size and if gp, security and remoteteach are supported.
+            </xs:documentation>
+          </xs:annotation>
+        </xs:element>
+      </xs:sequence>
+    </xs:complexType>  
+   </xs:element>
+   <xs:element name="Device_Parameters" maxOccurs="1" minOccurs="0">
+     <xs:annotation>
+       <xs:appinfo>Device Parameter</xs:appinfo>
+       <xs:documentation xml:lang="en">
+         Describes static parameter, and configurable (recom) parameters of the device. The Application node describes possible preset for the configurable parameters
+         for certain application types.
+       </xs:documentation>
+     </xs:annotation>
+    <xs:complexType>
+     <xs:sequence>
+       <xs:element name="Properties" type="PropertyType" maxOccurs="1" minOccurs="0">
+         <xs:annotation>
+           <xs:appinfo>Static Parameter</xs:appinfo>
+           <xs:documentation xml:lang="en">
+             Describes static parameters, for example a static heartbeat send by the device.
+           </xs:documentation>
+         </xs:annotation>
+       </xs:element>
+       <xs:element name="RecomParameters" type="ParameterType" maxOccurs="1" minOccurs="0">
+         <xs:annotation>
+           <xs:appinfo>Configurable Parameters</xs:appinfo>
+           <xs:documentation xml:lang="en">
+             Describes parameters, which can be read or set via ReCom. Some parameters could be read or write only.
+           </xs:documentation>
+         </xs:annotation>
+       </xs:element>
+       <xs:element name="Applications" maxOccurs="1" minOccurs="0" type="ApplicationType">
+         <xs:annotation>
+           <xs:appinfo>Application Presets</xs:appinfo>
+           <xs:documentation xml:lang="en">
+             Describes Application presets, which change the configurable parameters. 
+           </xs:documentation>
+         </xs:annotation>
+       </xs:element>
+     </xs:sequence>
+    </xs:complexType>
+   </xs:element>
+   <xs:element name="Index_Linked_Parameters" maxOccurs="1" minOccurs="0">
+     <xs:annotation>
+       <xs:appinfo>Device Parameters associated to a certain EEP</xs:appinfo>
+       <xs:documentation xml:lang="en">
+         In the node links, the linkage between these parameters and a certain EEP and link table direction is described. 
+         This lists all possible parameters which can be used by such links, e.g. an auto off after receiving an F6-02-01 (ptm-switch) telegram.
+       </xs:documentation>
+     </xs:annotation>
+    <xs:complexType>
+     <xs:sequence>
+       <xs:element name="Parameters" type="ParameterType">
+         <xs:annotation>
+           <xs:appinfo>Possible linked device Parameters</xs:appinfo>
+           <xs:documentation xml:lang="en">
+            All possible linked device parameters. The link is generated in the "linktype" node
+          </xs:documentation>
+         </xs:annotation>
+       </xs:element>
+
+       <xs:element name="Links" type="LinkType">
+         <xs:annotation>
+           <xs:appinfo>Links between params and eeps</xs:appinfo>
+           <xs:documentation xml:lang="en">
+             This describes the link between an inbound or outbound eep and the used params.
+           </xs:documentation>
+         </xs:annotation>
+       </xs:element>
+     </xs:sequence>
+    </xs:complexType>
+   </xs:element>
+   <xs:element name="OptionalCommands" maxOccurs="1" minOccurs="0">
+     <xs:annotation>
+       <xs:appinfo>Optional ReCom command supported</xs:appinfo>
+       <xs:documentation xml:lang="en">
+         These ReCom command are option as described in the ReCom spec. If the node occurs the commands are supported
+       </xs:documentation>
+     </xs:annotation>
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="ResetDevice" maxOccurs="1" minOccurs="0"/>
+        <xs:element name="RadioLinkTest" maxOccurs="1" minOccurs="0"/>
+        <xs:element name="RepeaterFunctions" maxOccurs="1" minOccurs="0"/>
+        <xs:element name="SecurityFunctions" maxOccurs="1" minOccurs="0">
+			<xs:complexType>
+				<xs:attribute name="NumberOfKeysSupported" type="xs:decimal" use="required"/>
+			</xs:complexType>
+		</xs:element>
+      </xs:sequence>
+    </xs:complexType>
+   </xs:element>
+   <xs:element name="SupportedRPC" maxOccurs="1" minOccurs="0">
+     <xs:annotation>
+       <xs:appinfo>RPC supported</xs:appinfo>
+       <xs:documentation xml:lang="en">
+         A list of supporter remote procedure calls of this device.
+       </xs:documentation>
+     </xs:annotation>
+   <xs:complexType>
+    <xs:sequence>
+      <xs:element name="RPC" type="RPCType" maxOccurs="unbounded" minOccurs="0">
+        <xs:annotation>
+        <xs:appinfo>A RPC which is supported</xs:appinfo>
+        <xs:documentation xml:lang="en">
+          A supported rpc by this device with FunctionCode and ManufacturerCode
+        </xs:documentation>
+        </xs:annotation>
+      </xs:element>
+    </xs:sequence>
+   </xs:complexType>
+   </xs:element>
+  </xs:sequence>
+   <xs:attribute name="Product_ID" use="required" type="HexType12">
+     <xs:annotation>
+       <xs:appinfo>Product ID</xs:appinfo>
+       <xs:documentation xml:lang="en">
+         The productID of the device.
+       </xs:documentation>
+     </xs:annotation>
+   </xs:attribute>
+
+ </xs:complexType>
+</xs:element>
+</xs:sequence>
+<xs:attribute name="schemaVersion" type="xs:decimal" use="required" fixed="1.3"/>
+</xs:complexType>
+
+<!-- For Supported GPTypes, a GPType either describes the hole TeachIN Message,
+a strict ChannelDescription, or a Channel Description  -->
+<xs:complexType name="GPType">
+  
+ <xs:sequence>
+  <xs:choice>
+    <xs:element name="GP_TeachIN" type="HexType">
+      <xs:annotation>
+        <xs:appinfo>GP teach in telegram ID</xs:appinfo>
+        <xs:documentation xml:lang="en">
+          The whole teach in telegram as byte stream.
+        </xs:documentation>
+      </xs:annotation>
+    </xs:element>
+   <xs:element name="GP_Channel" type="GPChannelType">
+     <xs:annotation>
+       <xs:appinfo>GP Channels</xs:appinfo>
+       <xs:documentation xml:lang="en">
+         The GP is described via channel
+       </xs:documentation>
+     </xs:annotation>
+   </xs:element>
+  </xs:choice>
+ </xs:sequence>
+  <xs:attribute name="LinkEntry" use="required" type="LinkEntryType">
+      <xs:annotation>
+        <xs:appinfo>Which LinkTable Entry supports this GP</xs:appinfo>
+        <xs:documentation xml:lang="en">
+          Can be  inbound(link table)/ outbound(link table) or none.
+        </xs:documentation>
+      </xs:annotation>
+  </xs:attribute>
+</xs:complexType>
+  
+<xs:complexType name="SignalType">
+  <xs:annotation>
+    <xs:appinfo>Signal Telegrams</xs:appinfo>
+    <xs:documentation xml:lang="en">
+      Signal Telegram Type this device can send, a list of MID this device could send in its lifetime
+    </xs:documentation>
+  </xs:annotation>
+ <xs:sequence>
+   <xs:element name="MID" type="HexType" maxOccurs="255" minOccurs="1">
+     <xs:annotation>
+       <xs:appinfo>Signal MID</xs:appinfo>
+       <xs:documentation xml:lang="en">
+         MIDs of supported signals
+       </xs:documentation>
+     </xs:annotation>
+   </xs:element>
+ </xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="BaseIDType">
+  <xs:annotation>
+    <xs:appinfo>BaseID Entry Telegrams</xs:appinfo>
+    <xs:documentation xml:lang="en">
+      BaseIDType, allows definition of different transmitting profiles using the base ids
+    </xs:documentation>
+  </xs:annotation>
+<xs:sequence>
+ <xs:element name="Profile" maxOccurs="127" minOccurs="1">
+  <xs:complexType>
+   <xs:choice>
+    <xs:element name="EEP" type="EEPType"/>
+    <xs:element name="GP" type="GPType"/>
+   </xs:choice>
+    <xs:attribute name="IDOffset" use="required" type="xs:unsignedShort">
+      <xs:annotation>
+        <xs:appinfo>Offset of the BaseID</xs:appinfo>
+        <xs:documentation xml:lang="en">
+          The offset of the baseID which is used to send the following EEP or GP
+        </xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
+  </xs:complexType>
+ </xs:element>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="GPChannelType">
+<xs:sequence>
+  <xs:annotation>
+    <xs:appinfo>Description using cp channel</xs:appinfo>
+    <xs:documentation xml:lang="en">
+      The description of an supported gp using the gp channel notation
+    </xs:documentation>
+  </xs:annotation>
+  <xs:element name="Channel_Type" type="BitType2">
+    <xs:annotation>
+      <xs:appinfo>GP Channel type</xs:appinfo>
+      <xs:documentation xml:lang="en">
+        Channel Type definition: 
+        00 = Teach-in information Teach-in signals / flags, 
+        01 = Data Complex bit values, 
+        10 = Flag Single bit value, 
+        11 = Enumeration Enumerated values, 
+      </xs:documentation>
+    </xs:annotation>
+  </xs:element>
+  <xs:element name="Value_Type" type="BitType2" maxOccurs="1" minOccurs="0">
+    <xs:annotation>
+      <xs:appinfo>GP Value type</xs:appinfo>
+      <xs:documentation xml:lang="en">
+        Value Type definition:
+        00 = Reserved
+        01 = Current value
+        10 = Set point absolute
+        11 = Set point relative
+      </xs:documentation>
+    </xs:annotation>
+  </xs:element>
+  <xs:element name="Signal_Type" type="HexType2" maxOccurs="1" minOccurs="1">
+    <xs:annotation>
+      <xs:appinfo>GP Signal type</xs:appinfo>
+      <xs:documentation xml:lang="en">
+        The signal type classifies the origin of the transmitted value itself and its character (e.g. physical
+        unit or field of use). The signal types differ between the channel types. For a list of signal type consult the GP appendix.
+      </xs:documentation>
+    </xs:annotation>
+  </xs:element>
+  <xs:element name="EnumList" type="EnumListType" maxOccurs="1" minOccurs="0">
+    <xs:annotation>
+      <xs:appinfo>Enum description </xs:appinfo>
+      <xs:documentation xml:lang="en">
+        If the channel type is an enum, the enumlist can be used to describe the meaning of the different values. 
+      </xs:documentation>
+    </xs:annotation>
+  </xs:element>
+  <xs:element name="Restrictions" minOccurs="0" maxOccurs="1">
+    <xs:annotation>
+      <xs:appinfo>Restriction description </xs:appinfo>
+      <xs:documentation xml:lang="en">
+        For receiving Values, we do not care about scaling,resolution,and eng_min and eng_max
+        we care about the actual min and max value for interpretation, this is optional.
+        The description using Resolution,Eng_Min,Scale_Min,Eng_Max,Scale_Max is like the gp one.
+      </xs:documentation>
+    </xs:annotation>
+  <xs:complexType>
+   <xs:choice>
+     <xs:sequence>
+       <xs:element name="Max_Value" type="HexType" maxOccurs="1" minOccurs="0"/>
+       <xs:element name="Min_Value" type="HexType" maxOccurs="1" minOccurs="0"/>
+     </xs:sequence>
+     <xs:sequence>
+    <xs:element name="Resolution" type="HexType1"/>
+	  <xs:element name="Eng_Min" type="xs:byte"  maxOccurs="1" minOccurs="0"/>
+	  <xs:element name="Scale_Min" type="HexType1" maxOccurs="1" minOccurs="0"/>
+	  <xs:element name="Eng_Max" type="xs:byte" maxOccurs="1" minOccurs="0"/>
+	  <xs:element name="Scale_Max" type="HexType1" maxOccurs="1" minOccurs="0"/>
+     </xs:sequence>
+    </xs:choice>
+    </xs:complexType>
+   </xs:element>
+</xs:sequence>
+</xs:complexType>
+<xs:complexType name="TableType">
+  <xs:attribute name="maxLength" type="xs:decimal" use="required">
+    <xs:annotation>
+      <xs:appinfo>Maximal number of entries  </xs:appinfo>
+      <xs:documentation xml:lang="en">
+        How many entries this table can maximal have.
+      </xs:documentation>
+    </xs:annotation>
+  </xs:attribute>
+  <xs:attribute name="GPSupported" type="xs:boolean" use="required">
+    <xs:annotation>
+      <xs:appinfo>GP Supported </xs:appinfo>
+      <xs:documentation xml:lang="en">
+        If the table supports gp entry types.
+      </xs:documentation>
+    </xs:annotation>
+  </xs:attribute>
+  <xs:attribute name="RemoteTeachSupported" type="xs:boolean" use="required">
+    <xs:annotation>
+      <xs:appinfo>Remote Teach Supported </xs:appinfo>
+      <xs:documentation xml:lang="en">
+        Remote teach supported. If yes, the device can set into remote teach in mode, and store entries in the link table for received teach ins.
+      </xs:documentation>
+    </xs:annotation>
+  </xs:attribute>
+  <xs:attribute name="SecuritySupported" type="xs:boolean">
+    <xs:annotation>
+      <xs:appinfo>Security Entries Supported </xs:appinfo>
+      <xs:documentation xml:lang="en">
+        The table can store Security Information. 
+      </xs:documentation>
+    </xs:annotation>
+  </xs:attribute>
+</xs:complexType>
+<!-- describes the linking of link paramater to different EEPS -->
+<xs:complexType name="LinkType">
+ <xs:sequence>
+  <xs:element name="LinkEntry" maxOccurs="unbounded" minOccurs="0">
+    <xs:annotation>
+      <xs:appinfo>Link entries  </xs:appinfo>
+      <xs:documentation xml:lang="en">
+        Describes a link between one or more eeps using the same linked parameters
+      </xs:documentation>
+    </xs:annotation>
+   <xs:complexType>
+    <xs:sequence>
+      <xs:element name="EEP" type="EEPType"  maxOccurs="unbounded" minOccurs="0">
+        <xs:annotation>
+          <xs:appinfo>EEP  </xs:appinfo>
+          <xs:documentation xml:lang="en">
+            An eep supporting the listed parameters
+          </xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <!-- Used IDX number of the link parameters -->
+      <xs:element name="Param"  maxOccurs="unbounded" minOccurs="0">
+        <xs:annotation>
+          <xs:appinfo>Linked Parameter  </xs:appinfo>
+          <xs:documentation xml:lang="en">
+           A list of linked parameters idx which are used by these links
+          </xs:documentation>
+        </xs:annotation>
+       <xs:complexType>
+         <xs:attribute name="index" use="required" type="xs:unsignedShort">
+           <xs:annotation>
+           <xs:appinfo>Linked Parameter Index </xs:appinfo>
+           <xs:documentation xml:lang="en">
+             The index of the linked parameter, defined in the Index_Linked_Parameters node.
+           </xs:documentation>
+           </xs:annotation>
+         </xs:attribute>
+       </xs:complexType>
+      </xs:element>
+      <xs:element name="Applications" maxOccurs="1" minOccurs="0" type="ApplicationType">
+        <xs:annotation>
+          <xs:appinfo>Typical "application" for this eep</xs:appinfo>
+          <xs:documentation xml:lang="en">
+            Describes "presets" of parameter settings which can be used for a typical applications. 
+          </xs:documentation>
+        </xs:annotation>
+      </xs:element>
+     </xs:sequence>
+     <xs:attribute name="Direction">
+       <xs:annotation>
+         <xs:appinfo>Direction limitations for links</xs:appinfo>
+         <xs:documentation xml:lang="en">
+           If this attribute does not exist, both is used. Describe it the link exists for Inbound,Outbound links or Both.
+         </xs:documentation>
+       </xs:annotation>
+      <xs:simpleType>
+       <xs:restriction base="xs:string">
+        <xs:enumeration value="Inbound"/>
+        <xs:enumeration value="Outbound"/>
+        <xs:enumeration value="Both"/>
+       </xs:restriction>
+      </xs:simpleType>
+     </xs:attribute>
+    </xs:complexType>
+  </xs:element>
+ </xs:sequence>
+</xs:complexType>
+<xs:complexType name="ApplicationType">
+ <xs:sequence>
+  <xs:element name="App" maxOccurs="unbounded" minOccurs="0">
+    <xs:annotation>
+      <xs:appinfo>An "app" / "use case"</xs:appinfo>
+      <xs:documentation xml:lang="en">
+        A typical "use case", "application". Defines parameter values to be used for this application.
+      </xs:documentation>
+    </xs:annotation>
+   <xs:complexType>
+    <xs:sequence>
+      <xs:element name="Description" type="xs:string">
+        <xs:annotation>
+          <xs:appinfo>Description of the application</xs:appinfo>
+          <xs:documentation xml:lang="en">
+           Short description for this application.
+          </xs:documentation>
+        </xs:annotation>
+      </xs:element>
+     <xs:element name="Parameters">
+     <xs:complexType>
+      <xs:sequence>
+       <xs:element name="Param" maxOccurs="unbounded" minOccurs="1">
+         <xs:annotation>
+           <xs:appinfo>One parameter which will be modified</xs:appinfo>
+           <xs:documentation xml:lang="en">
+             A parameter based on the index, which will be modified by this application. The parameter ConfigValue is the raw value in a hex format.
+           </xs:documentation>
+         </xs:annotation>
+        <xs:complexType>
+         <xs:sequence>
+          <xs:element name="ConfigValue" type="HexType"/>
+         </xs:sequence>
+          <xs:attribute name="index" use="required" type="xs:unsignedShort">
+            <xs:annotation>
+              <xs:appinfo>Param Index </xs:appinfo>
+              <xs:documentation xml:lang="en">
+                The index of the parameter, which value shall be set by this application  
+              </xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+        </xs:complexType>
+       </xs:element>
+      </xs:sequence>
+     </xs:complexType>
+    </xs:element>
+   </xs:sequence>
+  </xs:complexType>
+ </xs:element>
+ </xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="PropertyType">
+ <xs:sequence>
+  <xs:element name="Param" maxOccurs="unbounded" minOccurs="0">
+   <xs:complexType>
+   <xs:sequence>
+     <xs:element name="Name" type="xs:string">
+       <xs:annotation>
+         <xs:appinfo>Name of the Parameter</xs:appinfo>
+         <xs:documentation xml:lang="en">
+           Name of the parameter, which should be displayed e.g. heartbeat. 
+         </xs:documentation>
+       </xs:annotation>
+     </xs:element>
+    <xs:element name="Description" type="xs:string">
+      <xs:annotation>
+        <xs:appinfo>Description of the Parameter</xs:appinfo>
+        <xs:documentation xml:lang="en">
+          Description of the parameter, which should be displayed e.g. The device will send at least every x seconds a message.
+        </xs:documentation>
+      </xs:annotation>
+    </xs:element>
+    <xs:element name="Value" type="xs:string">
+      <xs:annotation>
+        <xs:appinfo>Value of the Parameter</xs:appinfo>
+        <xs:documentation xml:lang="en">
+          The value of this parameter, e.g. "5".
+        </xs:documentation>
+      </xs:annotation>
+    </xs:element>
+    <xs:element name="Unit" type="xs:string" minOccurs="0">
+      <xs:annotation>
+        <xs:appinfo>Unit (optional)</xs:appinfo>
+        <xs:documentation xml:lang="en">
+          Optional Unit of the parameter.
+        </xs:documentation>
+      </xs:annotation>
+    </xs:element>
+   </xs:sequence>
+   </xs:complexType>
+ </xs:element>
+ </xs:sequence>
+</xs:complexType>
+<xs:complexType name="ParameterType">
+ <xs:sequence>
+  <xs:element name="Param" maxOccurs="unbounded" minOccurs="0">
+   <xs:complexType>
+   <xs:sequence>
+     <xs:element name="Description" type="xs:string">
+       <xs:annotation>
+         <xs:appinfo>Description of the Parameter</xs:appinfo>
+         <xs:documentation xml:lang="en">
+           Description of the parameter, which should be displayed e.g. The device will send at least every x seconds a message.
+         </xs:documentation>
+       </xs:annotation>
+     </xs:element>
+    <xs:choice minOccurs="1" maxOccurs="1">
+      <xs:element name="Scaled" type="ScaledChannel">
+        <xs:annotation>
+          <xs:appinfo>Scaled type parameter</xs:appinfo>
+          <xs:documentation xml:lang="en">
+            The parameter is described using a scale type, similar to the eep description.
+          </xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="Text" type="TextChannel">
+        <xs:annotation>
+          <xs:appinfo>Text type parameter</xs:appinfo>
+          <xs:documentation xml:lang="en">
+            The parameter is a utf8 text.
+          </xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="Enum" type="EnumEEP">
+        <xs:annotation>
+          <xs:appinfo>Enum Parameter</xs:appinfo>
+          <xs:documentation xml:lang="en">
+            The parameter is an enum.
+          </xs:documentation>
+        </xs:annotation>
+      </xs:element>
+     <xs:element name="Private" type="PrivateType">
+       <xs:annotation>
+         <xs:appinfo>Reserved/ not described Parameter</xs:appinfo>
+         <xs:documentation xml:lang="en">
+           The parameter is either reserved or not described.
+         </xs:documentation>
+       </xs:annotation>
+     </xs:element>
+    </xs:choice>
+   </xs:sequence>
+     <xs:attribute name="index" use="required" type="xs:unsignedShort">
+       <xs:annotation>
+         <xs:appinfo>Index of the Parameter</xs:appinfo>
+         <xs:documentation xml:lang="en">
+           The index is used for the link and application nodes. 
+         </xs:documentation>
+       </xs:annotation>
+     </xs:attribute>
+     <xs:attribute name="accessLevel" use="required" type="AccessLevelType">
+       <xs:annotation>
+         <xs:appinfo>Access level</xs:appinfo>
+         <xs:documentation xml:lang="en">
+           If a parameter is read,write or readWrite.
+         </xs:documentation>
+       </xs:annotation>
+     </xs:attribute>
+   <xs:attribute name="recommendedUserLevel" use="required" type="UserLevelType">
+     <xs:annotation>
+       <xs:appinfo>User level</xs:appinfo>
+       <xs:documentation xml:lang="en">
+         Recommended user level for this parameter.
+       </xs:documentation>
+     </xs:annotation>
+   </xs:attribute>
+  </xs:complexType>
+  </xs:element>
+ </xs:sequence>
+  <xs:attribute name="RPCWriteStartAddress" use="optional" type="HexType4">
+    <xs:annotation>
+      <xs:appinfo>RPC Write - Start Address</xs:appinfo>
+      <xs:documentation xml:lang="en">
+        If using an RPC write, this would be the start address for this parameter. This allows e.g. to write a lot of parameters with one write command.
+      </xs:documentation>
+    </xs:annotation>
+  </xs:attribute>
+ <xs:attribute name="RPCWriteLength" use="optional" type="HexType4">
+   <xs:annotation>
+     <xs:appinfo>RPC Length</xs:appinfo>
+     <xs:documentation xml:lang="en">
+       If using an RPC write, this would be the length of this parameters.
+     </xs:documentation>
+   </xs:annotation>
+ </xs:attribute>
+</xs:complexType>
+<xs:complexType name="RPCType">
+ <xs:sequence>
+   <xs:element name="FunctionCode" maxOccurs="1" minOccurs="1" type="HexType3">
+     <xs:annotation>
+       <xs:appinfo>Function Code</xs:appinfo>
+       <xs:documentation xml:lang="en">
+         Function Code of the RPC:
+       </xs:documentation>
+     </xs:annotation>
+   </xs:element>
+  <xs:element name="ManufacturerID" maxOccurs="1" minOccurs="1" type="HexType3">
+    <xs:annotation>
+      <xs:appinfo>ManufacturerID</xs:appinfo>
+      <xs:documentation xml:lang="en">
+        ManufacturerID of the rpc
+      </xs:documentation>
+    </xs:annotation>
+  </xs:element>
+ </xs:sequence>
+</xs:complexType>
+
+<!--  Describes an EEP -->
+<xs:complexType name="EEPType">
+ <xs:sequence>
+  <xs:element name="Rorg" maxOccurs="1" minOccurs="1" type="HexType2">
+    <xs:annotation>
+      <xs:appinfo>RORG</xs:appinfo>
+      <xs:documentation xml:lang="en">
+        RORG of the eep
+      </xs:documentation>
+    </xs:annotation>
+  </xs:element>
+  <xs:element name="Func" maxOccurs="1" minOccurs="1" type="HexType2">
+    <xs:annotation>
+      <xs:appinfo>Func</xs:appinfo>
+      <xs:documentation xml:lang="en">
+        Func of the eep
+      </xs:documentation>
+    </xs:annotation>
+  </xs:element>
+  <xs:element name="Type" maxOccurs="1" minOccurs="1" type="HexType2">
+    <xs:annotation>
+      <xs:appinfo>Type</xs:appinfo>
+      <xs:documentation xml:lang="en">
+        Type of the eep
+      </xs:documentation>
+    </xs:annotation>
+  </xs:element>
+ </xs:sequence>
+  <xs:attribute name="LinkEntry" use="optional" type="LinkEntryType">
+    <xs:annotation>
+      <xs:appinfo>Which LinkTable Entry supports this GP</xs:appinfo>
+      <xs:documentation xml:lang="en">
+        Can be  inbound(link table)/ outbound(link table) or none.
+      </xs:documentation>
+    </xs:annotation>
+  </xs:attribute>
+</xs:complexType>
+<xs:complexType name="ScaledChannel">
+ <xs:sequence>
+   <xs:element name="Length_In_Bytes" type="xs:unsignedInt">
+     <xs:annotation>
+       <xs:appinfo>Length in Bytes </xs:appinfo>
+       <xs:documentation xml:lang="en">
+         How long the parameter is in bytes
+       </xs:documentation>
+     </xs:annotation>
+   </xs:element>
+  <xs:element name="Default_Value" type="xs:decimal">
+    <xs:annotation>
+      <xs:appinfo>Default value </xs:appinfo>
+      <xs:documentation xml:lang="en">
+        The default value of the parameter
+      </xs:documentation>
+    </xs:annotation>
+  </xs:element>
+  <xs:element name="Range" type="UnsignedMinMaxType"/>
+  <xs:element name="Scale" type="MinMaxType"/>
+  <xs:element name="Unit" type="xs:string"/>
+  </xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="TextChannel">
+ <xs:sequence>
+   <xs:element name="Length_In_Bytes" type="xs:unsignedInt">
+     <xs:annotation>
+       <xs:appinfo>Length in Bytes </xs:appinfo>
+       <xs:documentation xml:lang="en">
+         How long the parameter is in bytes
+       </xs:documentation>
+     </xs:annotation>
+   </xs:element>
+ </xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="UnsignedMinMaxType">
+ <xs:sequence>
+  <xs:element name="Min" type="xs:nonNegativeInteger"/>
+  <xs:element name="Max" type="xs:nonNegativeInteger"/>
+ </xs:sequence>
+</xs:complexType>
+<xs:complexType name="MinMaxType">
+ <xs:sequence>
+  <xs:element name="Min" type="xs:decimal"/>
+  <xs:element name="Max" type="xs:decimal"/>
+ </xs:sequence>
+</xs:complexType>
+
+
+<xs:complexType name="EnumEEP">
+ <xs:sequence>
+   <xs:element name="Default_Value" type="xs:unsignedInt">
+       <xs:annotation>
+         <xs:appinfo>Default value </xs:appinfo>
+         <xs:documentation xml:lang="en">
+           The default value of the parameter
+         </xs:documentation>
+       </xs:annotation>
+     </xs:element>
+   <xs:element name="Length_In_Bytes" type="xs:unsignedInt">
+     <xs:annotation>
+       <xs:appinfo>Length in Bytes </xs:appinfo>
+       <xs:documentation xml:lang="en">
+         How long the parameter is in bytes
+       </xs:documentation>
+     </xs:annotation>
+   </xs:element>
+  <xs:element name="EnumList" type="EnumEEPListType"/>
+  </xs:sequence>
+</xs:complexType>
+<xs:complexType name="EnumEEPListType">
+ <xs:sequence>
+ <xs:choice maxOccurs="unbounded">
+  <xs:element name="Enum_Value" maxOccurs="unbounded">
+   <xs:complexType>
+    <xs:sequence>
+      <xs:element name="Description" type="xs:string">
+        <xs:annotation>
+          <xs:appinfo>Description of the Parameter</xs:appinfo>
+          <xs:documentation xml:lang="en">
+            Description of the parameter, which should be displayed e.g. The device will send at least every x seconds a message.
+          </xs:documentation>
+        </xs:annotation>
+      </xs:element>
+    </xs:sequence>
+    <xs:attribute name="index" type="xs:unsignedInt"/>
+   </xs:complexType>
+  </xs:element>
+  <xs:element name="ScaledEnum_Value" maxOccurs="unbounded">
+   <xs:complexType>
+    <xs:sequence>
+      <xs:element name="Description" type="xs:string">
+        <xs:annotation>
+          <xs:appinfo>Description of the Parameter</xs:appinfo>
+          <xs:documentation xml:lang="en">
+            Description of the parameter, which should be displayed e.g. The device will send at least every x seconds a message.
+          </xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="Scale" type="MinMaxType"/>
+      <xs:element name="Unit" type="xs:string"/>
+    </xs:sequence>
+    <xs:attribute name="indexMin" type="xs:unsignedInt"/>
+    <xs:attribute name="indexMax" type="xs:unsignedInt"/>
+   </xs:complexType>
+  </xs:element>
+     </xs:choice>
+ <!-- One enum Value, all availables ones have to be described! -->
+
+ </xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="PrivateType">
+ <xs:sequence>
+  <xs:element name="Default_Value" type="HexType">
+    <xs:annotation>
+      <xs:appinfo>Default value </xs:appinfo>
+      <xs:documentation xml:lang="en">
+        The default value of the parameter
+      </xs:documentation>
+    </xs:annotation>
+  </xs:element>
+   <xs:element name="Length_In_Bytes" type="xs:unsignedInt">
+     <xs:annotation>
+       <xs:appinfo>Length in Bytes </xs:appinfo>
+       <xs:documentation xml:lang="en">
+         How long the parameter is in bytes
+       </xs:documentation>
+     </xs:annotation>
+   </xs:element>
+  </xs:sequence>
+</xs:complexType>
+<!--  Gp Channel Types  -->
+<!-- GP Data Channel-->
+<xs:complexType name="DataChannel">
+ <xs:sequence>
+  <xs:element name="Default_Value" type="HexType"/>
+  <xs:element name="Signal_Type" type="HexType2"/>
+  <xs:element name="Value_Type" type="HexType1"/>
+  <xs:element name="Resolution" type="HexType1"/>
+  <xs:element name="Eng_Min" type="xs:unsignedInt"/>
+  <xs:element name="Scale_Min" type="HexType1"/>
+  <xs:element name="Eng_Max" type="xs:unsignedInt"/>
+  <xs:element name="Scale_Max" type="HexType1"/>
+  </xs:sequence>
+</xs:complexType>
+<!-- GP Flag Channel -->
+ <xs:complexType name="FlagChannel">
+ <xs:sequence>
+  <xs:element name="Default_Value" type="HexType"/>
+  <xs:element name="Signal_Type" type="HexType2"/>
+  <xs:element name="Value_Type" type="HexType1"/>
+  </xs:sequence>
+</xs:complexType>
+<!-- describes the enum channel -->
+<xs:complexType name="EnumChannel">
+ <xs:sequence>
+  <xs:element name="Default_Value" type="HexType"/>
+  <xs:element name="Signal_Type" type="HexType2"/>
+  <xs:element name="Value_Type" type="HexType1"/>
+  <xs:element name="Resolution" type="HexType1"/>
+  <xs:element name="EnumList" type="EnumListType"/>
+  </xs:sequence>
+</xs:complexType>
+<!-- Enum List -->
+<xs:complexType name="EnumListType">
+ <xs:sequence>
+ <!-- One enum Value, all availables ones have to be described! -->
+  <xs:element name="Enum_Value" maxOccurs="unbounded" minOccurs="1">
+   <xs:complexType>
+    <xs:sequence>
+     <!-- Short Description of the enum -->
+      <xs:element name="Description" type="xs:string">
+        <xs:annotation>
+          <xs:appinfo>Description of the Parameter</xs:appinfo>
+          <xs:documentation xml:lang="en">
+            Description of the parameter, which should be displayed e.g. The device will send at least every x seconds a message.
+          </xs:documentation>
+        </xs:annotation>
+      </xs:element>
+    </xs:sequence>
+    <xs:attribute name="index" type="xs:unsignedInt"/>
+   </xs:complexType>
+  </xs:element>
+ </xs:sequence>
+</xs:complexType>
+<!-- AccessLevelType describes if a paramater can be read/written or both via recom -->
+<xs:simpleType name="AccessLevelType">
+ <xs:restriction base="xs:string">
+   <xs:enumeration value="read"/>
+   <xs:enumeration value="write"/>
+   <xs:enumeration value="readWrite"/>
+ </xs:restriction>
+</xs:simpleType>
+<!-- Recommended Level which sort of user can access the parameter -->
+ <xs:simpleType name="UserLevelType">
+ <xs:restriction base="xs:string">
+   <xs:enumeration value="admin"/>
+   <xs:enumeration value="user"/>
+ </xs:restriction>
+</xs:simpleType>
+<!--  Enocean Frequencies -->
+<xs:simpleType name="FreqType">
+ <xs:restriction base="xs:string">
+   <xs:enumeration value="315"/>
+   <xs:enumeration value="868"/>
+   <xs:enumeration value="902"/>
+   <xs:enumeration value="928"/>
+ </xs:restriction>
+</xs:simpleType>
+ <!-- Integer and Data Types definitations -->
+
+<!-- To Display Data Values  -->
+<xs:simpleType name="HexType">
+ <xs:restriction base="xs:string">
+  <xs:pattern value="([0][x][A-F0-9]+)|([0-9]+)|([0-9]+[.][0-9]+)|[0][b][0-1]+"/>
+  </xs:restriction>
+</xs:simpleType>
+<!-- to display 2bit data  -->
+<xs:simpleType name="BitType2">
+  <xs:restriction base="xs:string">
+   <xs:pattern value="([0][x][0-3]{1})|([0][b][0-1]{2})"/>
+  </xs:restriction>
+</xs:simpleType>
+<!-- to display 4bit data  -->
+<xs:simpleType name="HexType1">
+  <xs:restriction base="xs:string">
+   <xs:pattern value="([0][x][A-F0-9]{1})|([0][b][0-1]{4})"/>
+  </xs:restriction>
+</xs:simpleType>
+<!-- to display 1byte data  -->
+<xs:simpleType name="HexType2">
+  <xs:restriction base="xs:string">
+   <xs:pattern value="[0][x][A-F0-9]{2}|([0][b][0-1]{8})"/>
+  </xs:restriction>
+</xs:simpleType>
+<!-- to display 3Hex values data  -->
+<xs:simpleType name="HexType3">
+  <xs:restriction base="xs:string">
+   <xs:pattern value="[0][x][A-F0-9]{3}"/>
+  </xs:restriction>
+</xs:simpleType>
+<!-- to display 2byte data  -->
+<xs:simpleType name="HexType4">
+  <xs:restriction base="xs:string">
+   <xs:pattern value="[0][x][A-F0-9]{4}"/>
+  </xs:restriction>
+</xs:simpleType>
+<!-- to display 3byte data  -->
+<xs:simpleType name="HexType6">
+  <xs:restriction base="xs:string">
+   <xs:pattern value="[0][x][A-F0-9]{6}"/>
+  </xs:restriction>
+</xs:simpleType>
+<!-- to display 4byte data  -->
+<xs:simpleType name="HexType8">
+  <xs:restriction base="xs:string">
+   <xs:pattern value="[0][x][A-F0-9]{8}"/>
+  </xs:restriction>
+</xs:simpleType>
+<!-- to display 6byte data  -->
+<xs:simpleType name="HexType12">
+  <xs:restriction base="xs:string">
+   <xs:pattern value="[0][x][A-F0-9]{12}"/>
+  </xs:restriction>
+</xs:simpleType>
+
+<xs:simpleType name="LinkEntryType">
+ <xs:restriction base="xs:string">
+   <xs:enumeration value="Inbound"/>
+   <xs:enumeration value="Outbound"/>
+   <xs:enumeration value="None"/>
+ </xs:restriction>
+</xs:simpleType>
+
+</xs:schema>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

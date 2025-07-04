@@ -13,16 +13,16 @@ allowedUsersReadable = json.loads(ALLOWED_USERS)
 #ist der Test gueltig;
 #Wenn eine Datei geloescht wurde, und sich NUR die 'index.xml' aendert,
 #ist der Test guelitg
-if CHANGED_FILES == "" or (len(CHANGED_FILES.split()) == 1 and CHANGED_FILES.split()[0].split('/')[0] == 'index.xml'):
+if CHANGED_FILES == "" or (len(CHANGED_FILES.splitlines()) == 1 and CHANGED_FILES.splitlines()[0].split('/')[0] == 'index.xml'):
     print("No changes detected. (index.xml will be ignored)")
     sys.exit(0)
 
 #Der erste oberste Pfad wird als einzige gueltige Firma anerkannt
 #Existiert diese nicht, oder aeandert sie sich innerhalb eines Pull Requests, ist der Test ungueltig
-currentCompany = CHANGED_FILES.split()[0].split('/')[0]
+currentCompany = CHANGED_FILES.splitlines()[0].split('/')[0]
 
 #Checken, ob in nur einem Pfad Aenderungen vorgenommen wurden
-for file in CHANGED_FILES.split():
+for file in CHANGED_FILES.splitlines():
     if file.split('/')[0] == 'index.xml':
         print("index.xml will be ignored")
         pass

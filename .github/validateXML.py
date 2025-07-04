@@ -35,8 +35,9 @@ rootdir = './' + CHANGED_FILES.split()[0].split('/')[0]
 #Checkt, ob Dateinamen gueltig sind
 #Gueltig ist nur wenn: Nur kleine Buchstaben, nur Zahlen, nur Bindestriche, muss mit '.xml' enden
 for file in CHANGED_FILES.splitlines():
-    if not re.match(r'^[A-Za-z0-9_-]+\.xml$', file.split('/')[-1]):
-        print('::error::' + file.split('/')[-1] + ' invalid file name!')
+    file_name = os.path.basename(file)
+    if not re.match(r'^[A-Za-z0-9_-]+\.xml$', file_name):
+        print('::error::' + file_name + ' invalid file name!')
         sys.exit(1)
 
 #Durchlaueft den aktuellen Firmenordner und checkt alle .xml Dateien

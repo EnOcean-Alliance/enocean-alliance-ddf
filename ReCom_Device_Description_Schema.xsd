@@ -88,41 +88,14 @@
      </xs:annotation>
     <xs:complexType>
      <xs:sequence>
-      <xs:element name="EURID" maxOccurs="1" minOccurs="0">
+      <xs:element name="EURID" type="Profile_Definition" maxOccurs="1" minOccurs="0">
         <xs:annotation>
           <xs:appinfo>Profiles transmitted using the eurid</xs:appinfo>
           <xs:documentation xml:lang="en">
             This optional node contains all profiles using the eurid
           </xs:documentation>
         </xs:annotation>
-       <xs:complexType>
-        <xs:sequence>
-          <xs:element name="EEP" type="EEPType" maxOccurs="unbounded" minOccurs="0">
-            <xs:annotation>
-              <xs:appinfo>Supporter EEPs</xs:appinfo>
-              <xs:documentation xml:lang="en">
-                A supported eep with rorg,func and type
-              </xs:documentation>
-            </xs:annotation>
-          </xs:element>
-         <xs:element name="GP" type="GPType" maxOccurs="unbounded" minOccurs="0">
-           <xs:annotation>
-             <xs:appinfo>Supported GP</xs:appinfo>
-             <xs:documentation xml:lang="en">
-               A supported GP either written down as  GP_TeachIN or GPCHannel definition
-             </xs:documentation>
-           </xs:annotation>
-         </xs:element>
-		     <xs:element name="Signals" type="SignalType"  maxOccurs="1" minOccurs="0">
-           <xs:annotation>
-             <xs:appinfo>Profiles transmitted using the eurid</xs:appinfo>
-             <xs:documentation xml:lang="en">
-               This optional node contains all profiles using the eurid
-             </xs:documentation>
-           </xs:annotation>
-         </xs:element>
-        </xs:sequence>
-       </xs:complexType>
+      
       </xs:element>
        <xs:element name="BaseID" type="BaseIDType" maxOccurs="1" minOccurs="0">
          <xs:annotation>
@@ -147,7 +120,7 @@
     <xs:complexType>
      <xs:sequence>
        <xs:element name="EEP" type="EEPType" maxOccurs="unbounded" minOccurs="0">
-         <xs:annotation>
+       <xs:annotation>
            <xs:appinfo>Supporter EEPs</xs:appinfo>
            <xs:documentation xml:lang="en">
              A supported eep with rorg,func and type
@@ -155,13 +128,21 @@
          </xs:annotation>
        </xs:element>
        <xs:element name="GP" type="GPType" maxOccurs="unbounded" minOccurs="0">
-         <xs:annotation>
+       <xs:annotation>
            <xs:appinfo>Supported GP</xs:appinfo>
            <xs:documentation xml:lang="en">
              A supported GP either written down as  GP_TeachIN or GPCHannel definition
            </xs:documentation>
          </xs:annotation>
        </xs:element>
+       <xs:element name="MSC" type="MSCType"  minOccurs="0">
+       <xs:annotation>
+          <xs:appinfo>MSC Definition</xs:appinfo>
+          <xs:documentation xml:lang="en">
+           	optional to declare how the device works
+          </xs:documentation>
+        </xs:annotation>
+      </xs:element>
      </xs:sequence>
     </xs:complexType>
    </xs:element>
@@ -791,7 +772,7 @@ a strict ChannelDescription, or a Channel Description  -->
       </xs:documentation>
     </xs:annotation>
   </xs:element>
-  <xs:element name="Func" maxOccurs="1" minOccurs="1" type="HexType2">
+  <xs:element name="Func" maxOccurs="1" minOccurs="0" type="HexType2">
     <xs:annotation>
       <xs:appinfo>Func</xs:appinfo>
       <xs:documentation xml:lang="en">
@@ -799,7 +780,7 @@ a strict ChannelDescription, or a Channel Description  -->
       </xs:documentation>
     </xs:annotation>
   </xs:element>
-  <xs:element name="Type" maxOccurs="1" minOccurs="1" type="HexType2">
+  <xs:element name="Type" maxOccurs="1" minOccurs="0" type="HexType2">
     <xs:annotation>
       <xs:appinfo>Type</xs:appinfo>
       <xs:documentation xml:lang="en">
@@ -1094,10 +1075,84 @@ a strict ChannelDescription, or a Channel Description  -->
  </xs:restriction>
 </xs:simpleType>
 
+ <xs:complexType name="Profile_Definition">
+     <xs:sequence>
+       <xs:element name="EEP" type="EEPType" maxOccurs="unbounded" minOccurs="0">
+         <xs:annotation>
+           <xs:appinfo>Supporter EEPs</xs:appinfo>
+           <xs:documentation xml:lang="en">
+             A supported eep with rorg,func and type
+           </xs:documentation>
+         </xs:annotation>
+       </xs:element>
+      <xs:element name="GP" type="GPType" maxOccurs="unbounded" minOccurs="0">
+        <xs:annotation>
+          <xs:appinfo>Supported GP</xs:appinfo>
+          <xs:documentation xml:lang="en">
+            A supported GP either written down as  GP_TeachIN or GPCHannel definition
+          </xs:documentation>
+        </xs:annotation>
+      </xs:element>
+    <xs:element name="Signals" type="SignalType"  maxOccurs="1" minOccurs="0">
+        <xs:annotation>
+          <xs:appinfo>Profiles transmitted using the eurid</xs:appinfo>
+          <xs:documentation xml:lang="en">
+            This optional node contains all profiles using the eurid
+          </xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <!--  optional if EEP RORG == 0xD1 -->
+      <xs:element name="MSC" type="MSCType"  minOccurs="0">
+        <xs:annotation>
+          <xs:appinfo>MSC Definition</xs:appinfo>
+          <xs:documentation xml:lang="en">
+           	optional to declare how the device works
+          </xs:documentation>
+        </xs:annotation>
+      </xs:element>
+    </xs:sequence>
+</xs:complexType>
+
+
+<xs:complexType name="MSCType">
+<xs:sequence>
+<!-- any declaration -->
+	<xs:element name="Bitfield" type="BitFieldListType" minOccurs="1"/>
+</xs:sequence>
+</xs:complexType>
+
+
+<xs:complexType name="BitFieldListType">
+  <xs:sequence>
+    <xs:element name="Field" type="BitFieldType" maxOccurs="unbounded"/>
+  </xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="BitFieldType">
+  <xs:sequence>
+    <xs:element name="EnumValue" type="EnumBitValueType" maxOccurs="unbounded" minOccurs="0"/>
+	<xs:element name="ScaledValue" type="ScaledBitValueType" maxOccurs="unbounded" minOccurs="0"/>
+  </xs:sequence>
+  <xs:attribute name="name" type="xs:string" use="required"/>
+  <xs:attribute name="offset" type="xs:nonNegativeInteger" use="required"/>
+  <xs:attribute name="bitSize" type="xs:positiveInteger" use="required"/>
+</xs:complexType>
+
+<xs:complexType name="EnumBitValueType">
+  <xs:attribute name="value" type="xs:nonNegativeInteger" use="required"/>
+  <xs:attribute name="meaning" type="xs:string" use="required"/>
+</xs:complexType>
+
+<xs:complexType name="ScaledBitValueType">
+  <xs:attribute name="minValue" type="xs:double" use="required"/>
+  <xs:attribute name="maxValue" type="xs:double" use="required"/>
+  <xs:attribute name="minScaled" type="xs:double" use="required"/>
+  <xs:attribute name="maxScaled" type="xs:double" use="required"/>
+  <xs:attribute name="unit" type="xs:string" use="required"/>
+</xs:complexType>
+
+
 </xs:schema>
-
-
-
 
 
 

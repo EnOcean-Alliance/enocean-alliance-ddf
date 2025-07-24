@@ -1124,14 +1124,20 @@ a strict ChannelDescription, or a Channel Description  -->
 
 <xs:complexType name="BitFieldListType">
   <xs:sequence>
-    <xs:element name="Field" type="BitFieldType" maxOccurs="unbounded"/>
+    <xs:choice maxOccurs="unbounded">
+	    <xs:element name="Field" type="FieldType" maxOccurs="unbounded"/>
+	    <!-- optional to define different telegram payloads -->
+	    <xs:element name="SubsequentPayload" type="SubsequentPayloadType" maxOccurs="unbounded" minOccurs="0"/>
+  	</xs:choice>
   </xs:sequence>
 </xs:complexType>
 
-<xs:complexType name="BitFieldType">
+<xs:complexType name="FieldType">
   <xs:sequence>
     <xs:element name="EnumValue" type="EnumBitValueType" maxOccurs="unbounded" minOccurs="0"/>
-	<xs:element name="ScaledValue" type="ScaledBitValueType" maxOccurs="unbounded" minOccurs="0"/>
+    <xs:element name="EnumHexValue" type="EnumHexValueType" maxOccurs="unbounded" minOccurs="0"/>
+	<xs:element name="ScaledIntegerValue" type="ScaledIntegerValueType" maxOccurs="unbounded" minOccurs="0"/>
+	<xs:element name="ScaledDoubleValue" type="ScaledDoubleValueType" maxOccurs="unbounded" minOccurs="0"/>
   </xs:sequence>
   <xs:attribute name="name" type="xs:string" use="required"/>
   <xs:attribute name="offset" type="xs:nonNegativeInteger" use="required"/>
@@ -1143,13 +1149,36 @@ a strict ChannelDescription, or a Channel Description  -->
   <xs:attribute name="meaning" type="xs:string" use="required"/>
 </xs:complexType>
 
-<xs:complexType name="ScaledBitValueType">
-  <xs:attribute name="minValue" type="xs:double" use="required"/>
-  <xs:attribute name="maxValue" type="xs:double" use="required"/>
+<xs:complexType name="EnumHexValueType">
+ 	<xs:attribute name="value" type="xs:hexBinary" use="required"/>
+	<xs:attribute name="meaning" type="xs:string" use="required"/>
+</xs:complexType>
+
+<xs:complexType name="ScaledIntegerValueType">
+  <xs:attribute name="minValue" type="xs:hexBinary" use="required"/>
+  <xs:attribute name="maxValue" type="xs:hexBinary" use="required"/>
+  <xs:attribute name="minScaled" type="xs:nonNegativeInteger" use="required"/>
+  <xs:attribute name="maxScaled" type="xs:nonNegativeInteger" use="required"/>
+  <xs:attribute name="unit" type="xs:string" use="required"/>
+</xs:complexType>
+
+<xs:complexType name="ScaledDoubleValueType">
+  <xs:attribute name="minValue" type="xs:hexBinary" use="required"/>
+  <xs:attribute name="maxValue" type="xs:hexBinary" use="required"/>
   <xs:attribute name="minScaled" type="xs:double" use="required"/>
   <xs:attribute name="maxScaled" type="xs:double" use="required"/>
   <xs:attribute name="unit" type="xs:string" use="required"/>
 </xs:complexType>
+
+<xs:complexType name="SubsequentPayloadType">
+	<xs:sequence>
+		<xs:element name="Field" type="FieldType" minOccurs="0" maxOccurs="unbounded"/>
+  	</xs:sequence>
+ 	<xs:attribute name="id" type="xs:string" use="required"/>
+ 	<!-- If the later content has already been defined and is still needed elsewhere, then use refid -->
+ 	<xs:attribute name="refId" type="xs:string" use="optional"/>
+</xs:complexType>
+
 
 
 </xs:schema>

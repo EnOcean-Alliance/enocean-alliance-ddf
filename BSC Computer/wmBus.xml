@@ -15,7 +15,7 @@
 			<EEP>
 				<Rorg>0xD1</Rorg>
 			</EEP>
-			<!-- payload after Rorg: 0x01 60 01 -->
+			<!-- payload after Rorg -->
 			<MSC>
 				<Bitfield>
 				  <Field name="ManufacturerID" offset="8" bitSize="12">
@@ -40,7 +40,8 @@
 					<!-- PD change id; transmit the new identification number of the sensor -->	
 				 	<EnumValue value="5" meaning="PDCID"/> 		
 				 </Field>
-				  <!-- payload to the different telegram types -->
+				 
+				 <!-- payload to the different telegram types -->
 			
 				 <SubsequentPayload id="PDI">
 				 	  <Field name="manufacturer" offset="24" bitSize="16">

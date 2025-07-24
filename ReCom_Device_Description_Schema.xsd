@@ -1157,8 +1157,8 @@ a strict ChannelDescription, or a Channel Description  -->
 <xs:complexType name="ScaledIntegerValueType">
   <xs:attribute name="minValue" type="xs:hexBinary" use="required"/>
   <xs:attribute name="maxValue" type="xs:hexBinary" use="required"/>
-  <xs:attribute name="minScaled" type="xs:nonNegativeInteger" use="required"/>
-  <xs:attribute name="maxScaled" type="xs:nonNegativeInteger" use="required"/>
+  <xs:attribute name="minScaled" type="xs:integer" use="required"/>
+  <xs:attribute name="maxScaled" type="xs:integer" use="required"/>
   <xs:attribute name="unit" type="xs:string" use="required"/>
 </xs:complexType>
 

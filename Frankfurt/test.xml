@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Enocean_Devices
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	schemaVersion="1.3"
+	xsi:noNamespaceSchemaLocation="../ReCom_Device_Description_Schema.xsd">
+	<Device Product_ID="0x003400000000">
+		<Name>stellaproeno</Name>
+		<Description>Intelligent Thermostatic Radiator Valve</Description>
+		<Firmware_Version>2.1.7.1</Firmware_Version>
+		<Hardware_Version>1.0.0.0</Hardware_Version>
+		<Frequency>868</Frequency>
+		<TX>
+			<!-- The Profiles we send based on our chip id -->
+			<EURID>
+				<EEP>
+					<Rorg>0xA5</Rorg>
+					<Func>0x20</Func>
+					<Type>0x01</Type>
+				</EEP>
+			</EURID>
+		</TX>
+		<RX>
+			<!-- The Profiles we send based on our chip id -->
+				<EEP>
+					<Rorg>0xA5</Rorg>
+					<Func>0x20</Func>
+					<Type>0x01</Type>
+				</EEP>
+		</RX>
+		<LinkTable_MetaData>
+			<OutboundTable maxLength="1" GPSupported="false" RemoteTeachSupported="false" SecuritySupported="false"/>
+		</LinkTable_MetaData>
+	</Device>
+</Enocean_Devices>

@@ -22,7 +22,11 @@ def validate(xml_path: str, xsd_path: str) -> bool:
         print(f"Exception during validation: {e}")
         return False
 
-
+def validate_with_fallback(xml_path: str, primary_xsd: str, fallback_xsd: str) -> bool:
+    if validate(xml_path, primary_xsd):
+        return True
+    return validate(xml_path, fallback_xsd)
+    
 #Wenn keine Aenderungen erkannt werden, bzw. eine Aenderung 1:1 rueckgaengig gemacht wurde, 
 #ist der Test gueltig
 if CHANGED_FILES == "":
@@ -39,13 +43,16 @@ for file in CHANGED_FILES.splitlines():
     if not re.match(r'^[A-Za-z0-9_-]+\.xml$', file_name):
         print('::error::' + file_name + ' invalid file name!')
         sys.exit(1)
+        
+PRIMARY_XSD = ".github/schema.xsd"
+FALLBACK_XSD = ".github/schemaV2.0.xsd"
 
 #Durchlaueft den aktuellen Firmenordner und checkt alle .xml Dateien
 for subdir, dirs, files in os.walk(rootdir):
     for file in files:
         filepath = subdir + os.sep + file
         if filepath.endswith('.xml'):
-            if validate(filepath, ".github/schema.xsd"):
+            if validate_with_fallback(filepath, PRIMARY_XSD, FALLBACK_XSD):
                 print(filepath + " valid!")
             else:
                 print('::error::' + filepath + ' not vaild!')

@@ -1,0 +1,347 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Example XML for DDF-v2.xsd
+  - Includes ALL mandatory fields
+  - Also includes OPTIONAL sections as a clear template for users
+-->
+<Enocean_Devices schemaVersion="2.0">
+
+  <!-- ==========================================================
+       DEVICE #1 (fuller example with many optional blocks)
+       ========================================================== -->
+  <Device Product_ID="0x001122334455">
+
+    <!-- Mandatory -->
+    <Name>Example Device (Full Template)</Name>
+    <Description>Extended example showing optional sections as a user-friendly base.</Description>
+    <Firmware_Version>1.3</Firmware_Version>
+    <Hardware_Version>1.3</Hardware_Version>
+    <Frequency>868</Frequency>
+
+    <!-- Optional (strings) -->
+    <ReComVersion>2.1</ReComVersion>
+    <RemanVersion>1.0</RemanVersion>
+
+    <!-- Optional: TX -->
+    <TX>
+      <!-- Optional: EURID -->
+      <EURID>
+        <!-- Optional: EEP list -->
+        <EEP LinkEntry="None">
+          <Rorg>0xA5</Rorg>
+          <Func>0x02</Func>
+          <Type>0x05</Type>
+        </EEP>
+
+        <!-- Optional: GP list -->
+        <!-- GP example using GP_TeachIN branch (choice: TeachIN OR Channel) -->
+        <GP LinkEntry="None">
+          <GP_TeachIN>Teach-in supported</GP_TeachIN>
+        </GP>
+
+        <!-- GP example using GP_Channel branch (choice: TeachIN OR Channel) -->
+        <GP LinkEntry="Addressed">
+          <GP_Channel>
+            <Channel_Type>01</Channel_Type>
+            <Value_Type>10</Value_Type>
+            <Signal_Type>0x1234</Signal_Type>
+            <EnumList>
+              <Enum_Value index="0" ValueKey="OFF">
+                <Description>Off</Description>
+              </Enum_Value>
+              <Enum_Value index="1" ValueKey="ON">
+                <Description>On</Description>
+              </Enum_Value>
+            </EnumList>
+            <Restrictions>
+              <Max_Value>0x64</Max_Value>
+              <Min_Value>0x00</Min_Value>
+            </Restrictions>
+          </GP_Channel>
+        </GP>
+
+        <!-- Optional: Signals -->
+        <Signals>
+          <Signal MID="MID_EXAMPLE_001"/>
+          <Signal MID="MID_EXAMPLE_002"/>
+        </Signals>
+
+        <!-- Optional: MSC -->
+        <MSC>
+          <Bitfield>
+            <Field name="temperature" offset="0" bitSize="16">
+              <Scaled>
+                <Length_In_Bytes>2</Length_In_Bytes>
+                <Default_Value>200</Default_Value>
+                <Range>
+                  <Min>0</Min>
+                  <Max>65535</Max>
+                </Range>
+                <Scale>
+                  <Min>-40.0</Min>
+                  <Max>85.0</Max>
+                </Scale>
+                <Unit>°C</Unit>
+              </Scaled>
+            </Field>
+
+            <Field name="mode" offset="16" bitSize="8">
+              <Enum>
+                <Default_Value>0</Default_Value>
+                <Length_In_Bytes>1</Length_In_Bytes>
+                <EnumList>
+                  <Enum_Value index="0">
+                    <ValueKey>AUTO</ValueKey>
+                    <Description>Automatic</Description>
+                  </Enum_Value>
+                  <Enum_Value index="1">
+                    <ValueKey>MANUAL</ValueKey>
+                    <Description>Manual</Description>
+                  </Enum_Value>
+                </EnumList>
+              </Enum>
+            </Field>
+
+            <!-- Optional: SubsequentPayload -->
+            <SubsequentPayload id="payload2" refId="ref_payload2">
+              <Field name="battery" offset="0" bitSize="8">
+                <Scaled>
+                  <Length_In_Bytes>1</Length_In_Bytes>
+                  <Default_Value>100</Default_Value>
+                  <Range>
+                    <Min>0</Min>
+                    <Max>100</Max>
+                  </Range>
+                  <Scale>
+                    <Min>0.0</Min>
+                    <Max>100.0</Max>
+                  </Scale>
+                  <Unit>%</Unit>
+                </Scaled>
+              </Field>
+            </SubsequentPayload>
+
+          </Bitfield>
+        </MSC>
+      </EURID>
+
+      <!-- Optional: BaseID list -->
+      <BaseID>
+        <IDOffset>0</IDOffset>
+
+        <EEP LinkEntry="Addressed">
+          <Rorg>0xF6</Rorg>
+          <Func>0x02</Func>
+          <Type>0x01</Type>
+        </EEP>
+
+        <Signals>
+          <Signal MID="MID_BASEID_001"/>
+        </Signals>
+      </BaseID>
+    </TX>
+
+    <!-- Optional: RX -->
+    <RX>
+      <EEP LinkEntry="None">
+        <Rorg>0xD2</Rorg>
+        <Func>0x01</Func>
+        <Type>0x0A</Type>
+      </EEP>
+    </RX>
+
+    <!-- Optional: LinkTable_MetaData -->
+    <LinkTable_MetaData>
+      <InboundTable maxLength="16" GPSupported="true" RemoteTeachSupported="true" SecuritySupported="false"/>
+      <OutboundTable maxLength="16" GPSupported="true" RemoteTeachSupported="false" SecuritySupported="false"/>
+    </LinkTable_MetaData>
+
+    <!-- Optional: Device_Parameters -->
+    <Device_Parameters>
+
+      <!-- Optional: Properties -->
+      <Properties>
+        <Param>
+          <Name>Manufacturer</Name>
+          <Description>Device manufacturer name</Description>
+          <Value>ExampleCorp</Value>
+        </Param>
+        <Param>
+          <Name>SupplyVoltage</Name>
+          <Description>Nominal supply voltage</Description>
+          <Value>3.0</Value>
+          <Unit>V</Unit>
+        </Param>
+      </Properties>
+
+      <!-- Optional: RecomParameters -->
+      <RecomParameters>
+
+        <!-- Example: Scaled parameter -->
+        <Param index="1" accessLevel="readWrite" recommendedUserLevel="user" RPCWriteStartAddress="0x00000010" RPCWriteLength="0x00000002">
+          <Description>Target temperature setpoint</Description>
+          <ParameterFlag>persistent</ParameterFlag>
+          <BitField>
+            <Length_In_Bytes>2</Length_In_Bytes>
+            <BitsPerChannel>16</BitsPerChannel>
+          </BitField>
+          <Key>setpoint</Key>
+          <Scaled>
+            <Length_In_Bytes>2</Length_In_Bytes>
+            <Default_Value>210</Default_Value>
+            <Range>
+              <Min>0</Min>
+              <Max>65535</Max>
+            </Range>
+            <Scale>
+              <Min>5.0</Min>
+              <Max>30.0</Max>
+            </Scale>
+            <Unit>°C</Unit>
+          </Scaled>
+        </Param>
+
+        <!-- Example: Enum parameter -->
+        <Param index="2" accessLevel="readWrite" recommendedUserLevel="user">
+          <Description>Operating mode</Description>
+          <Enum>
+            <Default_Value>0</Default_Value>
+            <Length_In_Bytes>1</Length_In_Bytes>
+            <EnumList>
+              <Enum_Value index="0">
+                <ValueKey>AUTO</ValueKey>
+                <Description>Automatic</Description>
+              </Enum_Value>
+              <Enum_Value index="1">
+                <ValueKey>MANUAL</ValueKey>
+                <Description>Manual</Description>
+              </Enum_Value>
+              <ScaledEnum_Value indexMin="2" indexMax="5">
+                <Description>Custom profiles</Description>
+                <Scale>
+                  <Min>0.0</Min>
+                  <Max>1.0</Max>
+                </Scale>
+                <Unit>ratio</Unit>
+              </ScaledEnum_Value>
+            </EnumList>
+          </Enum>
+        </Param>
+
+        <!-- Example: Text parameter -->
+        <Param index="3" accessLevel="write" recommendedUserLevel="admin">
+          <Description>Device label</Description>
+          <Text>
+            <Length_In_Bytes>16</Length_In_Bytes>
+          </Text>
+        </Param>
+
+        <!-- Example: Private parameter -->
+        <Param index="4" accessLevel="read" recommendedUserLevel="admin">
+          <Description>Factory calibration blob</Description>
+          <Private>
+            <Default_Value>0xDEADBEEF</Default_Value>
+            <Length_In_Bytes>4</Length_In_Bytes>
+          </Private>
+        </Param>
+
+      </RecomParameters>
+
+      <!-- Optional: Applications -->
+      <Applications>
+        <App>
+          <Description>Default application profile</Description>
+          <Parameters>
+            <Param index="1">
+              <ConfigValue>21.0°C</ConfigValue>
+            </Param>
+            <Param index="2">
+              <ConfigValue>AUTO</ConfigValue>
+            </Param>
+          </Parameters>
+        </App>
+      </Applications>
+
+    </Device_Parameters>
+
+    <!-- Optional: Index_Linked_Parameters -->
+    <Index_Linked_Parameters>
+
+      <!-- Required inside Index_Linked_Parameters -->
+      <Parameters>
+        <Param index="10" accessLevel="readWrite" recommendedUserLevel="user">
+          <Description>Linked example parameter</Description>
+          <Scaled>
+            <Length_In_Bytes>1</Length_In_Bytes>
+            <Default_Value>10</Default_Value>
+            <Range>
+              <Min>0</Min>
+              <Max>100</Max>
+            </Range>
+            <Scale>
+              <Min>0.0</Min>
+              <Max>100.0</Max>
+            </Scale>
+            <Unit>%</Unit>
+          </Scaled>
+        </Param>
+      </Parameters>
+
+      <!-- Required inside Index_Linked_Parameters -->
+      <Links>
+        <LinkEntry Direction="Both">
+          <EEP LinkEntry="None">
+            <Rorg>0xA5</Rorg>
+            <Func>0x02</Func>
+            <Type>0x05</Type>
+          </EEP>
+
+          <!-- References by index -->
+          <Param index="10"/>
+
+          <Applications>
+            <App>
+              <Description>Linked application example</Description>
+              <Parameters>
+                <Param index="10">
+                  <ConfigValue>50%</ConfigValue>
+                </Param>
+              </Parameters>
+            </App>
+          </Applications>
+        </LinkEntry>
+      </Links>
+
+    </Index_Linked_Parameters>
+
+    <!-- Optional: OptionalCommands -->
+    <OptionalCommands>
+      <ResetDevice/>
+      <RadioLinkTest/>
+      <RepeaterFunctions/>
+      <SecurityFunctions NumberOfKeysSupported="2"/>
+    </OptionalCommands>
+
+    <!-- Optional: SupportedRPC -->
+    <SupportedRPC>
+      <RPC>
+        <FunctionCode>0x010203</FunctionCode>
+        <ManufacturerID>0xA1B2C3</ManufacturerID>
+      </RPC>
+    </SupportedRPC>
+
+  </Device>
+
+
+  <!-- ==========================================================
+       DEVICE #2 (shorter but still valid)
+       ========================================================== -->
+  <Device Product_ID="0xAABBCCDDEEFF">
+    <Name>Example Device (Minimal+)</Name>
+    <Description>Second device entry showing multiple Device elements are allowed.</Description>
+    <Firmware_Version>1.0</Firmware_Version>
+    <Hardware_Version>1.0</Hardware_Version>
+    <Frequency>902</Frequency>
+  </Device>
+
+</Enocean_Devices>

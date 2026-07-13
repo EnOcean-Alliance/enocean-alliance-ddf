@@ -1,0 +1,552 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" version="1.1">
+
+  <!-- =========================
+       Global base types
+       ========================= -->
+
+  <!-- 6-Byte Product ID: "0x" + 12 hex chars -->
+  <xs:simpleType name="Hex6Bytes">
+    <xs:restriction base="xs:string">
+      <xs:pattern value="0x[0-9A-Fa-f]{12}"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <!-- Generic hex string (at least 1 nibble after 0x) -->
+  <xs:simpleType name="HexType">
+    <xs:restriction base="xs:string">
+      <xs:pattern value="0x[0-9A-Fa-f]+"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="HexType1">
+    <xs:restriction base="xs:string">
+      <xs:pattern value="0x[0-9A-Fa-f]{2}"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="HexType2">
+    <xs:restriction base="xs:string">
+      <xs:pattern value="0x[0-9A-Fa-f]{4}"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="HexType3">
+    <xs:restriction base="xs:string">
+      <xs:pattern value="0x[0-9A-Fa-f]{6}"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="HexType4">
+    <xs:restriction base="xs:string">
+      <xs:pattern value="0x[0-9A-Fa-f]{8}"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <!-- 2-bit field encoded as two binary chars -->
+  <xs:simpleType name="BitType2">
+    <xs:restriction base="xs:string">
+      <xs:pattern value="[01]{2}"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="FreqType">
+    <xs:restriction base="xs:unsignedInt">
+      <xs:enumeration value="315"/>
+      <xs:enumeration value="868"/>
+      <xs:enumeration value="902"/>
+      <xs:enumeration value="928"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="AccessLevel">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="read"/>
+      <xs:enumeration value="write"/>
+      <xs:enumeration value="readWrite"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="UserLevel">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="admin"/>
+      <xs:enumeration value="user"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="LinkEntryType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="Addressed"/>
+      <xs:enumeration value="None"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="LinkDirectionType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="Inbound"/>
+      <xs:enumeration value="Outbound"/>
+      <xs:enumeration value="Both"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <!-- =========================
+       Root
+       ========================= -->
+
+  <xs:element name="Enocean_Devices" type="EnoceanDevicesType"/>
+
+  <xs:complexType name="EnoceanDevicesType">
+    <xs:sequence>
+      <xs:element name="Device" type="DeviceType" minOccurs="1" maxOccurs="unbounded"/>
+    </xs:sequence>
+    <xs:attribute name="schemaVersion" type="xs:string" use="required" fixed="2.0"/>
+  </xs:complexType>
+
+  <!-- =========================
+       Device (strict names)
+       ========================= -->
+
+  <xs:complexType name="DeviceType">
+    <xs:sequence>
+      <xs:element name="Name" type="xs:string"/>
+      <xs:element name="Description" type="xs:string"/>
+      <xs:element name="Firmware_Version" type="xs:string"/>
+      <xs:element name="Hardware_Version" type="xs:string"/>
+      <xs:element name="Frequency" type="FreqType"/>
+      <xs:element name="ReComVersion" type="xs:string" minOccurs="0"/>
+      <xs:element name="RemanVersion" type="xs:string" minOccurs="0"/>
+
+      <xs:element name="TX" type="TXType" minOccurs="0"/>
+      <xs:element name="RX" type="RXType" minOccurs="0"/>
+
+      <xs:element name="LinkTable_MetaData" type="LinkTableMetaDataType" minOccurs="0"/>
+      <xs:element name="Device_Parameters" type="DeviceParametersType" minOccurs="0"/>
+      <xs:element name="Index_Linked_Parameters" type="IndexLinkedParametersType" minOccurs="0"/>
+      <xs:element name="OptionalCommands" type="OptionalCommandsType" minOccurs="0"/>
+      <xs:element name="SupportedRPC" type="SupportedRPCType" minOccurs="0"/>
+    </xs:sequence>
+
+    <xs:attribute name="Product_ID" type="Hex6Bytes" use="required"/>
+  </xs:complexType>
+
+<!-- =========================
+     TX / RX exactly per tree (no xs:group)
+     ========================= -->
+
+<!-- EURID: EEP (0..n), GP (0..n), Signals (0..1), MSC (0..n) -->
+<xs:complexType name="EURIDType">
+  <xs:sequence>
+    <xs:element name="EEP" type="EEPType" minOccurs="0" maxOccurs="unbounded"/>
+    <xs:element name="GP" type="GPType" minOccurs="0" maxOccurs="unbounded"/>
+    <xs:element name="Signals" type="SignalsType" minOccurs="0" maxOccurs="1"/>
+    <xs:element name="MSC" type="MSCType" minOccurs="0" maxOccurs="unbounded"/>
+  </xs:sequence>
+</xs:complexType>
+
+<!-- BaseID: IDOffset (1) + same children as EURID -->
+<xs:complexType name="BaseIDType">
+  <xs:sequence>
+    <xs:element name="IDOffset" type="xs:unsignedShort" minOccurs="1" maxOccurs="1"/>
+    <xs:element name="EEP" type="EEPType" minOccurs="0" maxOccurs="unbounded"/>
+    <xs:element name="GP" type="GPType" minOccurs="0" maxOccurs="unbounded"/>
+    <xs:element name="Signals" type="SignalsType" minOccurs="0" maxOccurs="1"/>
+    <xs:element name="MSC" type="MSCType" minOccurs="0" maxOccurs="unbounded"/>
+  </xs:sequence>
+</xs:complexType>
+
+<!-- TX: EURID (1) + BaseID (0..128) -->
+<xs:complexType name="TXType">
+  <xs:sequence>
+    <xs:element name="EURID" type="EURIDType" minOccurs="0" maxOccurs="1"/>
+    <xs:element name="BaseID" type="BaseIDType" minOccurs="0" maxOccurs="128"/>
+  </xs:sequence>
+</xs:complexType>
+
+<!-- RX: EEP (0..n), GP (0..n), MSC (0..n) (no Signals) -->
+<xs:complexType name="RXType">
+  <xs:sequence>
+    <xs:element name="EEP" type="EEPType" minOccurs="0" maxOccurs="unbounded"/>
+    <xs:element name="GP" type="GPType" minOccurs="0" maxOccurs="unbounded"/>
+    <xs:element name="MSC" type="MSCType" minOccurs="0" maxOccurs="unbounded"/>
+  </xs:sequence>
+</xs:complexType>
+
+
+
+  <!-- =========================
+       EEP
+       ========================= -->
+
+  <xs:complexType name="EEPType">
+    <xs:sequence>
+      <xs:element name="Rorg" type="HexType1"/>
+      <xs:element name="Func" type="HexType1" minOccurs="0"/>
+      <xs:element name="Type" type="HexType1" minOccurs="0"/>
+    </xs:sequence>
+    <xs:attribute name="LinkEntry" type="LinkEntryType" use="optional" default="None"/>
+  </xs:complexType>
+
+  <!-- =========================
+       GP (strict Enum_Value spelling)
+       ========================= -->
+
+  <xs:complexType name="GPType">
+    <xs:choice>
+    <xs:sequence>
+      <xs:element name="GP_TeachIN" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+      <xs:element name="GP_Channel" type="GPChannelType" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:choice>
+    <xs:attribute name="LinkEntry" type="LinkEntryType" use="optional" default="None"/>
+  </xs:complexType>
+
+  <xs:complexType name="GPChannelType">
+    <xs:sequence>
+      <xs:element name="Channel_Type" type="BitType2"/>
+      <xs:element name="Value_Type" type="BitType2" minOccurs="0"/>
+      <xs:element name="Signal_Type" type="HexType2"/>
+      <xs:element name="EnumList" type="GPEnumListType"/>
+      <xs:element name="Restrictions" type="GPRestrictionsType" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="GPEnumListType">
+    <xs:sequence>
+      <xs:element name="Enum_Value" type="GPEnumValueType" minOccurs="1" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="GPEnumValueType">
+    <xs:sequence>
+      <xs:element name="Description" type="xs:string"/>
+    </xs:sequence>
+    <xs:attribute name="index" type="xs:unsignedInt" use="required"/>
+    <xs:attribute name="ValueKey" type="xs:string" use="optional"/>
+  </xs:complexType>
+
+  <!-- Restrictions (0..1): (Max_Value+Min_Value) | Resolution -->
+  <xs:complexType name="GPRestrictionsType">
+    <xs:choice>
+      <!-- Branch 1: Max_Value (0..1) + Min_Value (0..1) -->
+      <xs:sequence>
+        <xs:element name="Max_Value" type="HexType" minOccurs="0" maxOccurs="1"/>
+        <xs:element name="Min_Value" type="HexType" minOccurs="0" maxOccurs="1"/>
+      </xs:sequence>
+
+      <!-- Branch 2: Resolution (0..1) -->
+      <xs:sequence>
+      <xs:element name="Resolution" type="GPResolutionType" minOccurs="0" maxOccurs="1"/>
+       </xs:sequence>
+    </xs:choice>
+  </xs:complexType>
+
+
+  <xs:complexType name="GPResolutionType">
+    <xs:sequence>
+      <xs:element name="Eng_Min" type="xs:byte" minOccurs="0"/>
+      <xs:element name="Eng_Max" type="xs:byte" minOccurs="0"/>
+      <xs:element name="Scale_Min" type="HexType1" minOccurs="0"/>
+      <xs:element name="Scale_Max" type="HexType1" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <!-- =========================
+       Signals (strict overview form: MID only)
+       ========================= -->
+
+  <xs:complexType name="SignalsType">
+    <xs:sequence>
+      <xs:element name="Signal" minOccurs="0" maxOccurs="unbounded">
+        <xs:complexType>
+          <xs:attribute name="MID" type="xs:string" use="required"/>
+        </xs:complexType>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+
+  <!-- =========================
+       MSC (strict SubsequentPayload spelling)
+       ========================= -->
+
+  <xs:complexType name="MSCType">
+    <xs:sequence>
+      <xs:element name="Bitfield" type="MSCBitfieldType"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="MSCBitfieldType">
+    <xs:sequence>
+      <xs:element name="Field" type="MSCFieldType" minOccurs="1" maxOccurs="unbounded"/>
+      <xs:element name="SubsequentPayload" type="SubsequentPayloadType" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="MSCFieldType">
+    <xs:choice  minOccurs="1" maxOccurs="1">
+      <xs:element name="Scaled" type="ParamScaledType"/>
+      <xs:element name="Enum" type="ParamEnumType"/>
+    </xs:choice>
+
+    <xs:attribute name="name" type="xs:string" use="required"/>
+    <xs:attribute name="offset" type="xs:byte" use="required"/>
+    <xs:attribute name="bitSize" type="xs:byte" use="required"/>
+  </xs:complexType>
+
+  <xs:complexType name="SubsequentPayloadType">
+    <xs:sequence>
+      <xs:element name="Field" type="MSCFieldType" minOccurs="1" maxOccurs="unbounded"/>
+    </xs:sequence>
+    <xs:attribute name="id" type="xs:string" use="optional"/>
+    <xs:attribute name="refId" type="xs:string" use="optional"/>
+  </xs:complexType>
+
+  <!-- =========================
+       LinkTable_MetaData
+       ========================= -->
+
+  <xs:complexType name="LinkTableMetaDataType">
+    <xs:sequence>
+      <xs:element name="InboundTable" type="LinkTableType"  minOccurs="0"/>
+      <xs:element name="OutboundTable" type="LinkTableType"  minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="LinkTableType">
+    <xs:attribute name="maxLength" type="xs:unsignedInt" use="required"/>
+    <xs:attribute name="GPSupported" type="xs:boolean" use="optional"/>
+    <xs:attribute name="RemoteTeachSupported" type="xs:boolean" use="optional"/>
+    <xs:attribute name="SecuritySupported" type="xs:boolean" use="optional"/>
+  </xs:complexType>
+
+  <!-- =========================
+       Device_Parameters (strict: RecomParameters only)
+       ========================= -->
+
+  <xs:complexType name="DeviceParametersType">
+    <xs:sequence>
+      <xs:element name="Properties" type="PropertiesType" minOccurs="0"/>
+      <xs:element name="RecomParameters" type="RecomParametersType" minOccurs="0"/>
+      <xs:element name="Applications" type="ApplicationsType" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="PropertiesType">
+    <xs:sequence>
+      <xs:element name="Param" type="PropertyParamType" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="PropertyParamType">
+    <xs:sequence>
+      <xs:element name="Name" type="xs:string"/>
+      <xs:element name="Description" type="xs:string"/>
+      <xs:element name="Value" type="xs:string"/>
+      <xs:element name="Unit" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <!-- =========================
+       RecomParameters / Param (includes ParameterFlag)
+       ========================= -->
+
+  <xs:complexType name="RecomParametersType">
+    <xs:sequence>
+      <xs:element name="Param" type="RecomParamType" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+
+<xs:complexType name="RecomParamType">
+  <xs:sequence>
+    <xs:element name="Description" type="xs:string" minOccurs="1" maxOccurs="1"/>
+
+    <xs:element name="ParameterFlag" type="xs:string" minOccurs="0" maxOccurs="1"/>
+    <xs:element name="BitField" type="ParamBitFieldType" minOccurs="0" maxOccurs="1"/>
+    <xs:element name="Key" type="xs:string" minOccurs="0" maxOccurs="1"/>
+
+    <xs:choice minOccurs="1" maxOccurs="1">
+      <xs:element name="Scaled" type="ParamScaledType"/>
+      <xs:element name="Text" type="ParamTextType"/>
+      <xs:element name="Enum" type="ParamEnumType"/>
+      <xs:element name="Private" type="ParamPrivateType"/>
+    </xs:choice>
+  </xs:sequence>
+
+  <xs:attribute name="index" type="xs:unsignedShort" use="required"/>
+  <xs:attribute name="accessLevel" type="AccessLevel" use="optional"/>
+  <xs:attribute name="recommendedUserLevel" type="UserLevel" use="optional"/>
+  <xs:attribute name="RPCWriteStartAddress" type="HexType4" use="optional"/>
+  <xs:attribute name="RPCWriteLength" type="HexType4" use="optional"/>
+</xs:complexType>
+
+  <xs:complexType name="ParamBitFieldType">
+    <xs:sequence>
+      <xs:element name="Length_In_Bytes" type="xs:unsignedInt"/>
+      <xs:element name="BitsPerChannel" type="xs:unsignedInt" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="ParamScaledType">
+    <xs:sequence>
+      <xs:element name="Length_In_Bytes" type="xs:unsignedInt"/>
+      <xs:element name="Default_Value" type="xs:decimal"/>
+      <xs:element name="Range" type="ParamMinMaxIntType"/>
+      <xs:element name="Scale" type="ParamMinMaxDecimalType"/>
+      <xs:element name="Unit" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="ParamTextType">
+    <xs:sequence>
+      <xs:element name="Length_In_Bytes" type="xs:unsignedInt"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="ParamEnumType">
+    <xs:sequence>
+      <xs:element name="Default_Value" type="xs:unsignedInt"/>
+      <xs:element name="Length_In_Bytes" type="xs:unsignedInt"/>
+      <xs:element name="EnumList" type="ParamEnumListType"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="ParamEnumListType">
+    <xs:sequence>
+      <xs:element name="Enum_Value" type="ParamEnumValueType" minOccurs="1" maxOccurs="unbounded"/>
+      <xs:element name="ScaledEnum_Value" type="ParamScaledEnumValueType" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="ParamEnumValueType">
+    <xs:sequence>
+      <xs:element name="ValueKey" type="xs:string"  minOccurs="0"/>
+      <xs:element name="Description" type="xs:string"/>
+    </xs:sequence>
+    <xs:attribute name="index" type="xs:unsignedInt" use="required"/>
+  </xs:complexType>
+
+  <xs:complexType name="ParamScaledEnumValueType">
+    <xs:sequence>
+      <xs:element name="Description" type="xs:string"/>
+      <xs:element name="Scale" type="ParamMinMaxDecimalType"/>
+      <xs:element name="Unit" type="xs:string"/>
+    </xs:sequence>
+    <xs:attribute name="indexMin" type="xs:unsignedInt" use="required"/>
+    <xs:attribute name="indexMax" type="xs:unsignedInt" use="required"/>
+  </xs:complexType>
+
+  <xs:complexType name="ParamPrivateType">
+    <xs:sequence>
+      <xs:element name="Default_Value" type="HexType"/>
+      <xs:element name="Length_In_Bytes" type="xs:unsignedInt"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="ParamMinMaxIntType">
+    <xs:sequence>
+      <xs:element name="Min" type="xs:nonNegativeInteger"/>
+      <xs:element name="Max" type="xs:nonNegativeInteger"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="ParamMinMaxDecimalType">
+    <xs:sequence>
+      <xs:element name="Min" type="xs:decimal"/>
+      <xs:element name="Max" type="xs:decimal"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <!-- =========================
+       Applications
+       ========================= -->
+
+  <xs:complexType name="ApplicationsType">
+    <xs:sequence>
+      <xs:element name="App" type="AppType" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="AppType">
+    <xs:sequence>
+      <xs:element name="Description" type="xs:string"/>
+      <xs:element name="Parameters" type="AppParametersType" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="AppParametersType">
+    <xs:sequence>
+      <xs:element name="Param" type="AppParamType" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="AppParamType">
+    <xs:sequence>
+      <xs:element name="ConfigValue" type="xs:string"/>
+    </xs:sequence>
+    <xs:attribute name="index" type="xs:unsignedShort" use="required"/>
+  </xs:complexType>
+
+  <!-- =========================
+       Index_Linked_Parameters
+       ========================= -->
+
+  <xs:complexType name="IndexLinkedParametersType">
+    <xs:sequence>
+      <xs:element name="Parameters" type="RecomParametersType"/>
+      <xs:element name="Links" type="LinksType"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="LinksType">
+    <xs:sequence>
+      <xs:element name="LinkEntry" type="LinkedParamLinkEntryType" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="LinkedParamLinkEntryType">
+    <xs:sequence>
+      <xs:element name="EEP" type="EEPType" minOccurs="1" maxOccurs="unbounded"/>
+      <xs:element name="Param" type="LinkedParamRefType" minOccurs="0" maxOccurs="unbounded"/>
+      <xs:element name="Applications" type="ApplicationsType" minOccurs="0"/>
+    </xs:sequence>
+    <xs:attribute name="Direction" type="LinkDirectionType" use="required"/>
+  </xs:complexType>
+
+  <xs:complexType name="LinkedParamRefType">
+    <xs:attribute name="index" type="xs:unsignedInt" use="required"/>
+  </xs:complexType>
+
+  <!-- =========================
+       OptionalCommands
+       ========================= -->
+
+  <xs:complexType name="OptionalCommandsType">
+    <xs:sequence>
+      <xs:element name="ResetDevice" minOccurs="0"/>
+      <xs:element name="RadioLinkTest" minOccurs="0"/>
+      <xs:element name="RepeaterFunctions" minOccurs="0"/>
+      <xs:element name="SecurityFunctions" type="SecurityFunctionsType" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="SecurityFunctionsType">
+    <xs:attribute name="NumberOfKeysSupported" type="xs:unsignedInt" use="optional"/>
+  </xs:complexType>
+
+  <!-- =========================
+       SupportedRPC
+       ========================= -->
+
+  <xs:complexType name="SupportedRPCType">
+    <xs:sequence>
+      <xs:element name="RPC" type="RPCType" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="RPCType">
+    <xs:sequence>
+      <xs:element name="FunctionCode" type="HexType3"/>
+      <xs:element name="ManufacturerID" type="HexType3"/>
+    </xs:sequence>
+  </xs:complexType>
+
+</xs:schema>

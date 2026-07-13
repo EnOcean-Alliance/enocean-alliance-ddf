@@ -1,9 +1,15 @@
 import os
-import sys
 import re
+import sys
+
 from lxml import etree
 
-CHANGED_FILES = os.environ.get("CHANGED_FILES")
+
+CHANGED_FILES = os.environ.get("CHANGED_FILES", "")
+
+PRIMARY_XSD = ".github/schema.xsd"
+FALLBACK_XSD = ".github/schemaV2.0.xsd"
+
 
 def validate(xml_path: str, xsd_path: str) -> bool:
     try:
@@ -14,48 +20,95 @@ def validate(xml_path: str, xsd_path: str) -> bool:
         result = xmlschema.validate(xml_doc)
 
         if not result:
-            # Print all validation errors
             for error in xmlschema.error_log:
-                print(f"Validation error at line {error.line}: {error.message}")
+                print(
+                    f"Validation error in {xml_path} "
+                    f"at line {error.line}: {error.message}"
+                )
+
         return result
-    except Exception as e:
-        print(f"Exception during validation: {e}")
+
+    except Exception as error:
+        print(f"Exception while validating {xml_path}: {error}")
         return False
 
-def validate_with_fallback(xml_path: str, primary_xsd: str, fallback_xsd: str) -> bool:
+
+def validate_with_fallback(
+    xml_path: str,
+    primary_xsd: str,
+    fallback_xsd: str,
+) -> bool:
     if validate(xml_path, primary_xsd):
         return True
+
+    print(
+        f"{xml_path} is not valid according to {primary_xsd}. "
+        f"Trying {fallback_xsd}."
+    )
+
     return validate(xml_path, fallback_xsd)
-    
-#Wenn keine Aenderungen erkannt werden, bzw. eine Aenderung 1:1 rueckgaengig gemacht wurde, 
-#ist der Test gueltig
-if CHANGED_FILES == "":
-    print("No changes detected.")
+
+
+# The workflow must configure tj-actions/changed-files with:
+#
+# with:
+#   separator: "|"
+#
+# index.xml is generated automatically and is not a DDF XML document.
+changed_files = [
+    file_path.strip()
+    for file_path in CHANGED_FILES.split("|")
+    if file_path.strip() and file_path.strip() != "index.xml"
+]
+
+
+# No relevant DDF files changed.
+if not changed_files:
+    print("No DDF XML changes detected. index.xml is ignored.")
     sys.exit(0)
 
-#Setzt den rootdir auf den aktuellen Firmenordner
-rootdir = './' + CHANGED_FILES.split()[0].split('/')[0]
 
-#Checkt, ob Dateinamen gueltig sind
-#Gueltig ist nur wenn: Nur kleine Buchstaben, nur Zahlen, nur Bindestriche, muss mit '.xml' enden
-for file in CHANGED_FILES.splitlines():
-    file_name = os.path.basename(file)
-    if not re.match(r'^[A-Za-z0-9_-]+\.xml$', file_name):
-        print('::error::' + file_name + ' invalid file name!')
+# Use the first changed file's top-level directory as the company directory.
+rootdir = os.path.join(".", changed_files[0].split("/", 1)[0])
+
+print(f"Changed DDF files: {changed_files}")
+print(f"Directory to validate: {os.path.abspath(rootdir)}")
+
+
+# Validate changed filenames.
+for file_path in changed_files:
+    file_name = os.path.basename(file_path)
+
+    if not re.fullmatch(r"[A-Za-z0-9_-]+\.xml", file_name):
+        print(f"::error::{file_name} invalid file name!")
         sys.exit(1)
-        
-PRIMARY_XSD = ".github/schema.xsd"
-FALLBACK_XSD = ".github/schemaV2.0.xsd"
 
-#Durchlaueft den aktuellen Firmenordner und checkt alle .xml Dateien
+
+if not os.path.isdir(rootdir):
+    print(f"::error::Directory does not exist: {rootdir}")
+    sys.exit(1)
+
+
+# Validate every XML file in the affected company directory.
 for subdir, dirs, files in os.walk(rootdir):
-    for file in files:
-        filepath = subdir + os.sep + file
-        if filepath.endswith('.xml'):
-            if validate_with_fallback(filepath, PRIMARY_XSD, FALLBACK_XSD):
-                print(filepath + " valid!")
-            else:
-                print('::error::' + filepath + ' not vaild!')
-                sys.exit(1)
+    dirs.sort()
+    files.sort()
+
+    for file_name in files:
+        if not file_name.lower().endswith(".xml"):
+            continue
+
+        filepath = os.path.join(subdir, file_name)
+
+        if validate_with_fallback(
+            filepath,
+            PRIMARY_XSD,
+            FALLBACK_XSD,
+        ):
+            print(f"{filepath} valid!")
+        else:
+            print(f"::error::{filepath} not valid!")
+            sys.exit(1)
+
 
 sys.exit(0)

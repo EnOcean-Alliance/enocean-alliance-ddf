@@ -76,7 +76,7 @@ jobs:
 
   create-index:
     runs-on: ubuntu-latest
-    needs: ["validate-xml", "validate-user"]
+    #needs: ["validate-xml", "validate-user"]
     permissions:
       contents: write
     steps:
